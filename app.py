@@ -11,6 +11,14 @@ def chat_flotante():
        <!--Start of Tawk.to Script-->
 <script type="text/javascript">
 var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+// Mover a la izquierda
+        Tawk_API.customStyle = {
+            visibility : {
+                desktop : { xOffset : 20, yOffset : 20 },
+                mobile : { xOffset : 10, yOffset : 10 }
+            },
+            placement : 'bottom-left'
+        };
 (function(){
 var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
 s1.async=true;
