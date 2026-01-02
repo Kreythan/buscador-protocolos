@@ -96,7 +96,7 @@ for i, tab in enumerate(tabs):
         # --- BUSCADOR Y BOTÓN (Únicos por pestaña) ---
         search_query = st.text_input("Buscador General", placeholder=f"Buscar en {nombre_hoja}...", key=f"search_{nombre_hoja}")
         
-        if st.button("Limpiar Filtros", key=f"btn_{nombre_hoja}"):
+        if st.button("🧹 Limpiar Filtros", key=f"btn_{nombre_hoja}"):
             st.rerun()
 
         st.markdown("<br>", unsafe_allow_html=True)
