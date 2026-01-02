@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import streamlit.components.v1 as components
 
-# 1. CONFIGURACIÓN
+# 1. CONFIGURACIÓN DE PÁGINA
 st.set_page_config(page_title="Sistema de Protocolos", layout="wide")
 
 # 2. CHAT TAWK.TO
@@ -20,7 +20,7 @@ s0.parentNode.insertBefore(s1,s0);
 </script>
 """, height=0)
 
-# 3. CSS: ESTILO NEGRO, PESTAÑAS GRANDES Y FILTROS FINOS
+# 3. CSS: PESTAÑAS NEGRAS, LETRA GRANDE Y FILTROS FINOS
 st.markdown("""
     <style>
     .stApp { background-color: white !important; }
@@ -34,6 +34,7 @@ st.markdown("""
     }
     button[data-baseweb="tab"][aria-selected="true"] {
         border-bottom-color: #000000 !important;
+        color: #000000 !important;
     }
 
     /* BUSCADOR NEGRO */
@@ -54,6 +55,7 @@ st.markdown("""
         border-radius: 6px !important; 
     }
     
+    /* FORZAR LETRAS NEGRAS EN SELECCIÓN */
     div[data-baseweb="select"] span, div[data-baseweb="select"] div {
         color: black !important;
         -webkit-text-fill-color: black !important;
@@ -71,75 +73,79 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 4. FUNCIÓN PARA CARGAR DATOS (Lectura por hoja corregida)
+# 4. FUNCIÓN DE CARGA POR GID (Identificador único de hoja)
 @st.cache_data(ttl=5)
-def load_sheet_data(sheet_name):
-    # ID de publicación extraído de tu URL original
+def load_data_by_gid(gid_number):
     doc_id = "2PACX-1vRXI7sk1CdNqrMCi3lapZjt8DMoRwjVsiSknQwjgvBjVJHbusZ4GWjDYTJzTl40wictijbYo8ESq7gI"
-    
-    # IMPORTANTE: Esta URL fuerza a Google Sheets a exportar solo la pestaña indicada
-    url = f"https://docs.google.com/spreadsheets/d/e/{doc_id}/pub?sheet={sheet_name}&output=csv"
-    
+    # Forzamos la descarga de la hoja específica usando gid y single=true
+    url = f"https://docs.google.com/spreadsheets/d/e/{doc_id}/pub?gid={gid_number}&single=true&output=csv"
     try:
         data = pd.read_csv(url)
-        # Limpieza de nombres de columnas
         data.columns = data.columns.str.strip()
         return data
-    except Exception as e:
-        # Retorna una estructura vacía con tus columnas si hay error
+    except:
+        # Estructura de respaldo por si falla la conexión
         return pd.DataFrame(columns=['Nº Documento', 'Fecha', 'Hora', 'Falta', 'Hecho por', 'Realizado por', 'Lo tiene', 'Protocolo'])
 
-# 5. LÓGICA DE RESETEO PARA EL BOTÓN
-def reset_tab_fields(sheet):
-    st.session_state[f"search_{sheet}"] = ""
-    st.session_state[f"f1_{sheet}"] = "Todos"
-    st.session_state[f"f2_{sheet}"] = "Todos"
-    st.session_state[f"f3_{sheet}"] = "Todos"
+# 5. LÓGICA DE RESETEO
+def reset_tab_fields(tab_name):
+    st.session_state[f"search_{tab_name}"] = ""
+    st.session_state[f"f1_{tab_name}"] = "Todos"
+    st.session_state[f"f2_{tab_name}"] = "Todos"
+    st.session_state[f"f3_{tab_name}"] = "Todos"
 
-# 6. ESTRUCTURA DE PESTAÑAS
+# 6. DICCIONARIO DE CONFIGURACIÓN CON TUS GIDs
+config_pestanas = {
+    "Escrituras": "0",
+    "Poderes": "1447229472",
+    "Recos": "743245780",
+    "Actas": "1916128539",
+    "Certificaciones": "971802621",
+    "Declaraciones": "1180331770"
+}
+
+# 7. INTERFAZ
 st.markdown("<h1 style='text-align: center; color: black;'>Sistema de Búsqueda y Filtros</h1>", unsafe_allow_html=True)
 
-# Nombres de las pestañas (Deben ser IGUALES a las del Google Sheet)
-nombres_pestanas = ["Escrituras", "Poderes", "Recos", "Actas", "Certificaciones", "Declaraciones"]
-tabs = st.tabs(nombres_pestanas)
+nombres = list(config_pestanas.keys())
+tabs = st.tabs(nombres)
 
 for i, tab in enumerate(tabs):
+    nombre_pestana = nombres[i]
+    gid_actual = config_pestanas[nombre_pestana]
+    
     with tab:
-        nombre_hoja = nombres_pestanas[i]
-        df = load_sheet_data(nombre_hoja)
+        df = load_data_by_gid(gid_actual)
         
         # --- BUSCADOR ---
-        search_query = st.text_input(f"Buscar en {nombre_hoja}", placeholder="Escriba aquí...", key=f"search_{nombre_hoja}")
+        search_query = st.text_input(f"Buscar en {nombre_pestana}", placeholder="Escriba aquí...", key=f"search_{nombre_pestana}")
 
-        # Botón Limpiar vinculado a la función de reseteo
-        st.button("🧹 Limpiar Campos", key=f"btn_{nombre_hoja}", on_click=reset_tab_fields, args=(nombre_hoja,))
+        # Botón Limpiar
+        st.button("🧹 Limpiar Campos", key=f"btn_{nombre_pestana}", on_click=reset_tab_fields, args=(nombre_pestana,))
 
         st.markdown("<br>", unsafe_allow_html=True)
 
         # --- FILTROS ---
         col1, col2, col3 = st.columns(3)
         
-        def get_options(column_name, current_df):
-            if column_name in current_df.columns:
-                # Convertimos a string para evitar errores con valores nulos o numéricos
-                return ["Todos"] + sorted(list(current_df[column_name].dropna().astype(str).unique()))
+        def get_options(column_name, dataframe):
+            if column_name in dataframe.columns:
+                return ["Todos"] + sorted(list(dataframe[column_name].dropna().astype(str).unique()))
             return ["Todos"]
 
         with col1:
-            f_hecho = st.selectbox("Hecho por", get_options('Hecho por', df), key=f"f1_{nombre_hoja}")
+            f_hecho = st.selectbox("Hecho por", get_options('Hecho por', df), key=f"f1_{nombre_pestana}")
         with col2:
-            f_realizado = st.selectbox("Realizado por", get_options('Realizado por', df), key=f"f2_{nombre_hoja}")
+            f_realizado = st.selectbox("Realizado por", get_options('Realizado por', df), key=f"f2_{nombre_pestana}")
         with col3:
-            f_lo_tiene = st.selectbox("Lo tiene", get_options('Lo tiene', df), key=f"f3_{nombre_hoja}")
+            f_lo_tiene = st.selectbox("Lo tiene", get_options('Lo tiene', df), key=f"f3_{nombre_pestana}")
 
-        # --- PROCESAMIENTO DE FILTROS ---
+        # --- FILTRADO DE DATOS ---
         df_final = df.copy()
         
-        # Filtro de búsqueda general
         if search_query:
             df_final = df_final[df_final.apply(lambda row: row.astype(str).str.contains(search_query, case=False).any(), axis=1)]
         
-        # Filtros de selectores
         if f_hecho != "Todos":
             df_final = df_final[df_final['Hecho por'].astype(str) == f_hecho]
         if f_realizado != "Todos":
@@ -147,5 +153,5 @@ for i, tab in enumerate(tabs):
         if f_lo_tiene != "Todos":
             df_final = df_final[df_final['Lo tiene'].astype(str) == f_lo_tiene]
 
-        st.markdown(f"**Registros encontrados en {nombre_hoja}: {len(df_final)}**")
+        st.markdown(f"**Registros en {nombre_pestana}: {len(df_final)}**")
         st.dataframe(df_final, use_container_width=True, hide_index=True)
