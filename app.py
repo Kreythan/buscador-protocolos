@@ -18,11 +18,7 @@ def toggle_theme():
 # --- FORZADO DE VENTANA DE CHAT COMPLETA ---
 # --- CHAT FLOTANTE EN LA ESQUINA INFERIOR DERECHA ---
 # --- CHAT FLOTANTE POSICIONADO ABAJO A LA DERECHA ---
-st.markdown("""
-    <style>
-    #Buscamos elcontenedor del componente y lo fijamos
-    
-   # --- CONFIGURACIÓN FINAL DEL CHAT FLOTANTE ---
+# --- CONFIGURACIÓN FINAL DEL CHAT FLOTANTE ---
 st.markdown("""
     <style>
     /* 1. Localizamos el iframe del chat y lo sacamos del flujo normal */
@@ -61,7 +57,6 @@ components.html("""
         </script>
     </div>
 """, height=520)
-
 
 # 4. CSS DINÁMICO SEGÚN EL MODO
 # 4. CSS DINÁMICO MEJORADO (Sin bordes raros en las esquinas)
