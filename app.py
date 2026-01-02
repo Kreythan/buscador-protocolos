@@ -17,30 +17,33 @@ def toggle_theme():
 # --- FORZADO DE VISIBILIDAD DEL CHAT ---
 # --- FORZADO DE VENTANA DE CHAT COMPLETA ---
 # --- CHAT FLOTANTE EN LA ESQUINA INFERIOR DERECHA ---
-st.components.v1.html("""
+# --- CHAT FLOTANTE POSICIONADO ABAJO A LA DERECHA ---
+st.markdown("""
     <style>
-        /* Este estilo asegura que el contenedor del chat flote sobre la app */
-        #tawk-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 999999;
-        }
+    /* Buscamos el contenedor del componente y lo fijamos */
+    iframe[title="streamlit.components.v1.html"] {
+        position: fixed !important;
+        bottom: 0px !important;
+        right: 0px !important;
+        z-index: 999999 !important;
+        border: none !important;
+    }
     </style>
-    <div id="tawk-container">
-        <script type="text/javascript">
-            var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-            (function(){
-                var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-                s1.async=true;
-                s1.src='https://embed.tawk.to/695732610a00df198198e359/1jdu9pk10';
-                s1.charset='UTF-8';
-                s1.setAttribute('crossorigin','*');
-                s0.parentNode.insertBefore(s1,s0);
-            })();
-        </script>
-    </div>
-""", height=600) # Mantenemos el height alto para que la ventana de chat tenga espacio al abrirse
+""", unsafe_allow_html=True)
+
+components.html("""
+    <script type="text/javascript">
+        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+        (function(){
+            var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+            s1.async=true;
+            s1.src='https://embed.tawk.to/695732610a00df198198e359/1jdu9pk10';
+            s1.charset='UTF-8';
+            s1.setAttribute('crossorigin','*');
+            s0.parentNode.insertBefore(s1,s0);
+        })();
+    </script>
+""", height=600)
 
 
 # 4. CSS DINÁMICO SEGÚN EL MODO
