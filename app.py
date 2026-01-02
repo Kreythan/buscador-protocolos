@@ -119,7 +119,7 @@ search_query = st.text_input("Buscador General", placeholder="Escriba aquí para
 # Botón abajo a la izquierda de la barra
 col_btn, _ = st.columns([1, 5])
 with col_btn:
-    st.button("🧹 Limpiar Campos", on_click=clear_fields)
+    st.button("Limpiar Campos", on_click=clear_fields)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
