@@ -13,6 +13,7 @@ def toggle_theme():
     st.session_state.dark_mode = not st.session_state.dark_mode
 
 # 3. CHAT TAWK.TO
+# 2. CHAT TAWK.TO (Versión corregida)
 components.html("""
 <script type="text/javascript">
 var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
@@ -25,7 +26,7 @@ s1.setAttribute('crossorigin','*');
 s0.parentNode.insertBefore(s1,s0);
 })();
 </script>
-""", height=0)
+""", height=1) # Cambiado de 0 a 1 para asegurar renderizado
 
 # 4. CSS DINÁMICO SEGÚN EL MODO
 # 4. CSS DINÁMICO MEJORADO (Sin bordes raros en las esquinas)
