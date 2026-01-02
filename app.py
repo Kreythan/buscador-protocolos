@@ -20,7 +20,7 @@ s0.parentNode.insertBefore(s1,s0);
 </script>
 """, height=0)
 
-# 3. CSS: BUSCADOR OSCURO CON LETRAS BLANCAS Y FILTROS BLANCOS LÍMPIOS
+# 3. CSS: BUSCADOR OSCURO, LETRAS BLANCAS Y ELIMINACIÓN DE "PRESS ENTER"
 st.markdown("""
     <style>
     .stApp { background-color: white !important; }
@@ -38,12 +38,15 @@ st.markdown("""
     [data-testid="stTextInput"] input {
         color: white !important;
         background-color: transparent !important;
-        caret-color: white !important; /* Cursor blanco */
+        caret-color: white !important;
     }
 
-    /* Eliminar el cuadro blanco/flecha a la derecha del buscador */
-    [data-testid="stTextInput"] button, 
-    [data-testid="stTextInput"] ul {
+    /* ELIMINAR EL CUADRITO "PRESS ENTER TO APPLY" Y OTROS ELEMENTOS LATERALES */
+    [data-testid="stTextInput"] [data-testid="InputInstructions"] {
+        display: none !important;
+    }
+    
+    [data-testid="stTextInput"] button {
         display: none !important;
     }
 
@@ -54,29 +57,27 @@ st.markdown("""
         border-radius: 8px !important;
     }
 
-    /* Hacer que el selector sea solo lista (No escritura) */
+    /* Solo lista (No escritura) */
     div[data-baseweb="select"] input {
         caret-color: transparent !important;
         cursor: pointer !important;
     }
 
-    /* Texto negro en filtros */
     div[data-baseweb="select"] span {
         color: black !important;
         font-size: 18px !important;
     }
 
     /* --- LIMPIEZA GENERAL --- */
-    /* Quitar bordes internos rojos/azules y sombras al hacer click */
     [data-testid="stTextInput"] > div > div, 
     [data-testid="stSelectbox"] > div > div,
     [data-testid="stTextInput"] > div:focus-within {
         border: none !important;
         box-shadow: none !important;
         outline: none !important;
+        background-color: transparent !important;
     }
     
-    /* Forzar fondo blanco en filtros incluso al clickear */
     div[data-baseweb="select"] > div {
         background-color: white !important;
     }
@@ -102,12 +103,10 @@ df = load_data()
 # 5. INTERFAZ
 st.markdown("<h1 style='text-align: center; color: black;'>Sistema de Búsqueda</h1>", unsafe_allow_html=True)
 
-# Buscador General (Configurado para solo escritura en el CSS)
 search_query = st.text_input("Buscador General", placeholder="Escriba aquí para buscar...")
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# Filtros
 col1, col2, col3 = st.columns(3)
 with col1:
     f_hecho = st.selectbox("Filtrar por Hecho", ["Todos"] + sorted(list(df['Hecho'].dropna().unique())))
