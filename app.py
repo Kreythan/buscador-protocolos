@@ -20,14 +20,13 @@ s0.parentNode.insertBefore(s1,s0);
 </script>
 """, height=0)
 
-# 3. CSS: ELIMINAR INTERFAZ DE ESCRITURA EN FILTROS
+# 3. CSS: ELIMINAR ESCRITURA EN FILTROS Y BORDES INTERNOS
 st.markdown("""
     <style>
     .stApp { background-color: white !important; }
-    
     label { font-size: 20px !important; font-weight: bold !important; color: black !important; }
 
-    /* BORDE EXTERIOR ÚNICO */
+    /* BORDE EXTERIOR ÚNICO NEGRO */
     [data-testid="stTextInput"] > div, 
     [data-testid="stSelectbox"] > div {
         background-color: white !important;
@@ -36,14 +35,15 @@ st.markdown("""
         box-shadow: none !important;
     }
 
-    /* ELIMINAR EL CUADRO INTERNO DE ESCRITURA EN LOS SELECTORES */
-    div[data-baseweb="select"] > div:nth-child(1) {
+    /* QUITAR BORDE ROJO/AZUL INTERNO AL ESCRIBIR */
+    [data-testid="stTextInput"] > div > div, 
+    [data-testid="stSelectbox"] > div > div {
         border: none !important;
-        background-color: transparent !important;
         box-shadow: none !important;
+        outline: none !important;
     }
 
-    /* OCULTAR EL CURSOR DE ESCRITURA EN LOS FILTROS */
+    /* HACER QUE EL SELECTOR SEA SOLO LISTA (No escritura) */
     div[data-baseweb="select"] input {
         caret-color: transparent !important;
         cursor: pointer !important;
@@ -54,12 +54,10 @@ st.markdown("""
         color: black !important;
         font-size: 18px !important;
     }
-
-    /* QUITAR SOMBRAS Y DOBLE BORDE AL HACER CLIC */
-    div[data-baseweb="select"]:focus-within, input:focus {
-        outline: none !important;
-        border: none !important;
-        box-shadow: none !important;
+    
+    /* ELIMINAR COLOR PLOMO AL HACER CLIC */
+    div[data-baseweb="select"] > div {
+        background-color: white !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -67,23 +65,27 @@ st.markdown("""
 # 4. CARGA DE DATOS
 @st.cache_data(ttl=10)
 def load_data():
-    url = "TU_LINK_AQUI" 
+    # IMPORTANTE: Reemplaza las comillas de abajo por tu link de Google Sheets
+    url = "TU_LINK_DE_GOOGLE_SHEETS_AQUI" 
     try:
         return pd.read_csv(url)
     except:
-        return pd.DataFrame({'Hecho': ['Dato A', 'Dato B'], 'Realizado': ['SI', 'NO'], 'Lo Tiene': ['SI']})
+        # Datos de prueba corregidos (todos tienen la misma cantidad de elementos)
+        return pd.DataFrame({
+            'Hecho': ['Esperando Link', 'Configura el CSV'],
+            'Realizado': ['NO', 'NO'],
+            'Lo Tiene': ['NO', 'NO']
+        })
 
 df = load_data()
 
 # 5. INTERFAZ
 st.markdown("<h1 style='text-align: center; color: black;'>Sistema de Búsqueda</h1>", unsafe_allow_html=True)
 
-# El buscador general sigue permitiendo escribir (es necesario)
-search_query = st.text_input("Buscador General", placeholder="Escriba aquí...")
+search_query = st.text_input("Buscador General", placeholder="Escriba aquí para buscar...")
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# Filtros como listas desplegables
 col1, col2, col3 = st.columns(3)
 with col1:
     f_hecho = st.selectbox("Filtrar por Hecho", ["Todos"] + sorted(list(df['Hecho'].dropna().unique())))
@@ -92,9 +94,15 @@ with col2:
 with col3:
     f_lo_tiene = st.selectbox("Filtrar por Lo Tiene", ["Todos"] + sorted(list(df['Lo Tiene'].dropna().unique())))
 
-# 6. RESULTADOS
+# 6. FILTRADO Y TABLA
 df_final = df.copy()
 if search_query:
     df_final = df_final[df_final.apply(lambda row: row.astype(str).str.contains(search_query, case=False).any(), axis=1)]
+if f_hecho != "Todos":
+    df_final = df_final[df_final['Hecho'] == f_hecho]
+if f_realizado != "Todos":
+    df_final = df_final[df_final['Realizado'] == f_realizado]
+if f_lo_tiene != "Todos":
+    df_final = df_final[df_final['Lo Tiene'] == f_lo_tiene]
 
 st.dataframe(df_final, use_container_width=True)
