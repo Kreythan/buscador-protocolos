@@ -20,49 +20,48 @@ s0.parentNode.insertBefore(s1,s0);
 </script>
 """, height=0)
 
-# 3. CSS PARA CUADROS BLANCOS Y LETRAS GRANDES
+# 3. CSS PARA DISEÑO LIMPIO (SIN SOMBRAS, BORDE NEGRO)
 st.markdown("""
     <style>
-    /* Fondo general de la app siempre blanco */
+    /* Fondo general blanco puro */
     .stApp { background-color: white !important; }
     
-    /* Etiquetas de los filtros (Títulos) */
+    /* Títulos de los campos */
     label, .stMarkdown p {
-        font-size: 22px !important;
+        font-size: 20px !important;
         font-weight: bold !important;
         color: black !important;
+        margin-bottom: 8px !important;
     }
 
-    /* UNIFICACIÓN: Buscador y Selectores con fondo BLANCO */
+    /* DISEÑO LIMPIO: Sin sombras, fondo blanco y borde negro sólido */
     input, div[data-baseweb="select"] {
-        background-color: #FFFFFF !important; /* Fondo Blanco */
-        border: 2px solid #262730 !important;  /* Borde oscuro para contraste */
-        border-radius: 10px !important;
-        height: 55px !important;
+        background-color: #FFFFFF !important;
+        border: 2px solid #000000 !important; /* Borde negro sólido */
+        box-shadow: none !important;           /* Quitar sombras */
+        border-radius: 8px !important;
+        height: 50px !important;
     }
 
-    /* Forzar color de texto NEGRO dentro de los cuadros */
+    /* Color de texto negro dentro de los cuadros */
     input, div[data-baseweb="select"] div, div[data-baseweb="select"] span {
         color: black !important;
-        font-size: 20px !important;
+        font-size: 18px !important;
     }
 
-    /* Estilo para el buscador específico al escribir */
-    .stTextInput input {
-        color: black !important;
+    /* Quitar efectos de enfoque (foco azul/rojo) */
+    input:focus, div[data-baseweb="select"]:focus-within {
+        border-color: #000000 !important;
+        box-shadow: none !important;
     }
 
-    /* Lista desplegable de los filtros */
-    div[role="listbox"] {
-        background-color: white !important;
-    }
-    
-    div[role="option"] {
-        color: black !important;
-    }
-
-    /* Quitar bordes rojos de error o advertencia */
+    /* Estilo de la tabla de resultados */
     .stDataFrame { border: none !important; }
+    
+    /* Eliminar cualquier sombra en los contenedores de Streamlit */
+    [data-testid="stVerticalBlock"] > div {
+        box-shadow: none !important;
+    }
     </style>
 """, unsafe_allow_html=True)
 
@@ -83,7 +82,7 @@ def load_data():
 df = load_data()
 
 # 5. INTERFAZ VISUAL
-st.markdown("<h1 style='text-align: center; color: black; font-size: 42px;'>Sistema de Búsqueda y Filtros</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: black; font-size: 36px;'>Sistema de Búsqueda y Filtros</h1>", unsafe_allow_html=True)
 
 # Buscador General
 search_query = st.text_input("Buscador General (Escribe aquí)", placeholder="🔍 Buscar...")
