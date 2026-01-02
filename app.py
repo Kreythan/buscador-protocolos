@@ -29,21 +29,21 @@ st.markdown("""
     /* AGRANDAR LETRAS DE TODO EL SISTEMA */
     html, body, [class*="st-"] {
         font-size: 20px !important;
-         border: 5px solid black !important;
+        color: black !important;
     }
 
     /* Títulos de los filtros más grandes y negros */
     label, .stMarkdown p {
         font-size: 22px !important;
         font-weight: bold !important;
-        border: 5px solid black !important;
+        color: black !important;
     }
 
     /* Agrandar texto dentro de los cuadros (Inputs y Selects) */
     input, div[data-baseweb="select"] {
         font-size: 20px !important;
         height: 50px !important;
-        border: 5px solid black !important;
+        border: 2px solid black !important;
     }
     
     /* Eliminar espacios vacíos innecesarios */
@@ -64,10 +64,10 @@ def load_data():
 df = load_data()
 
 # 5. INTERFAZ VISUAL
-st.markdown("<h1 style='text-align: color: black; center; font-size: 40px;'>Sistema de Búsqueda y Filtros</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: black; font-size: 40px;'>Sistema de Búsqueda y Filtros</h1>", unsafe_allow_html=True)
 
 # Buscador General
-search_query = st.text_input("Buscador General ", placeholder="🔍 Buscar...")
+search_query = st.text_input("Buscador General (Escribe aquí)", placeholder="🔍 Buscar...")
 
 st.markdown("---")
 
