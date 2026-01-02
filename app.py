@@ -24,9 +24,10 @@ s0.parentNode.insertBefore(s1,s0);
 # 3. CSS: SUPER-FORZADO DE TAMAÑOS
 # 3. CSS: CORRECCIÓN DE COLORES Y TAMAÑOS GRANDES
 # 3. CSS: FORZADO DE COLOR NEGRO EN ETIQUETAS DE FILTROS
+# 3. CSS: SEPARACIÓN DEFINITIVA DE COLORES Y TAMAÑOS
 st.markdown("""
     <style>
-    /* 1. APP FONDO BLANCO */
+    /* 1. FONDO GENERAL */
     .stApp { background-color: white !important; }
 
     /* 2. PESTAÑAS (TABS) - GRANDES Y NEGRAS */
@@ -35,68 +36,66 @@ st.markdown("""
         font-weight: bold !important;
         color: black !important;
     }
-    
-    /* 3. TÍTULO DEL BUSCADOR (Específico para TextInput) */
-    [data-testid="stTextInput"] label p {
+
+    /* 3. TÍTULOS (LABELS) - FORZAR NEGRO EN TODO */
+    .stWidgetLabel p {
         font-size: 28px !important;
         font-weight: bold !important;
         color: black !important;
         -webkit-text-fill-color: black !important;
     }
 
-    /* 4. TÍTULOS DE LOS FILTROS (Específico para Selectbox) */
-    [data-testid="stSelectbox"] label p {
-        font-size: 28px !important;
-        font-weight: bold !important;
-        color: black !important; /* Forzar negro */
-        -webkit-text-fill-color: black !important; /* Forzar negro en navegadores basados en Chrome */
-    }
-
-    /* 5. BUSCADOR - FONDO NEGRO Y LETRA BLANCA */
-    [data-testid="stTextInput"] > div {
+    /* 4. BUSCADOR (TEXT INPUT) - FONDO NEGRO */
+    div[data-testid="stTextInput"] > div {
         background-color: black !important;
+        border: 1px solid #333333 !important;
         border-radius: 8px !important;
     }
-    [data-testid="stTextInput"] input {
+    div[data-testid="stTextInput"] input {
         font-size: 25px !important;
         color: white !important;
         -webkit-text-fill-color: white !important;
     }
 
-    /* 6. FILTROS (SELECTBOX) - FONDO BLANCO Y LETRA NEGRA */
-    [data-testid="stSelectbox"] > div {
+    /* 5. FILTROS (SELECTBOX) - FORZAR FONDO BLANCO */
+    div[data-testid="stSelectbox"] > div[data-baseweb="select"] {
         background-color: white !important;
         border: 1px solid #cccccc !important;
         border-radius: 8px !important;
-    }
-    [data-testid="stSelectbox"] div[data-baseweb="select"] {
-        font-size: 22px !important;
         color: black !important;
     }
-    /* Texto seleccionado en negro */
-    [data-testid="stSelectbox"] span {
+    
+    /* Fondo del contenedor interno del filtro */
+    div[data-baseweb="select"] > div {
+        background-color: white !important;
+    }
+
+    /* Texto dentro del filtro (opción seleccionada) */
+    div[data-testid="stSelectbox"] span {
+        font-size: 22px !important;
         color: black !important;
         -webkit-text-fill-color: black !important;
     }
 
-    /* 7. BOTÓN LIMPIAR */
+    /* 6. BOTÓN LIMPIAR */
     div.stButton > button {
         font-size: 22px !important;
-        background-color: #f8f9fa;
-        color: black;
-        border: 1px solid #cccccc;
+        background-color: #f8f9fa !important;
+        color: black !important;
+        border: 1px solid #cccccc !important;
     }
 
-    /* 8. TEXTO DE REGISTROS */
+    /* 7. TEXTO DE REGISTROS */
     .stMarkdown p {
         font-size: 24px !important;
         color: black !important;
     }
 
-    /* Ocultar instrucciones */
+    /* Eliminar avisos de Streamlit */
     [data-testid="InputInstructions"] { display: none !important; }
     </style>
 """, unsafe_allow_html=True)
+
 # 4. FUNCIÓN DE CARGA POR GID (Identificador único de hoja)
 @st.cache_data(ttl=5)
 def load_data_by_gid(gid_number):
