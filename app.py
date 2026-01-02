@@ -20,28 +20,12 @@ s0.parentNode.insertBefore(s1,s0);
 </script>
 """, height=0)
 
-# 3. CSS: PESTAÑAS NEGRAS Y LETRA MÁS GRANDE
+# 3. CSS MEJORADO (Buscador Negro, Filtros Finos y Pestañas)
 st.markdown("""
     <style>
     .stApp { background-color: white !important; }
+    label { font-size: 16px !important; font-weight: bold !important; color: black !important; }
     
-    /* Títulos de secciones y etiquetas */
-    label { font-size: 20px !important; font-weight: bold !important; color: black !important; }
-    
-    /* ESTILO DE LAS PESTAÑAS (TABS) */
-    /* Color negro, letra más grande y espaciado */
-    button[data-baseweb="tab"] {
-        font-size: 22px !important; 
-        font-weight: 800 !important;
-        color: #000000 !important;
-    }
-    
-    /* Color de la pestaña seleccionada (línea azul de abajo a negro) */
-    button[data-baseweb="tab"][aria-selected="true"] {
-        color: #000000 !important;
-        border-bottom-color: #000000 !important;
-    }
-
     /* BUSCADOR NEGRO */
     [data-testid="stTextInput"] > div { 
         background-color: #000000 !important; 
@@ -50,11 +34,10 @@ st.markdown("""
     }
     [data-testid="stTextInput"] input { 
         color: white !important; 
-        font-size: 18px !important;
         -webkit-text-fill-color: white !important; 
     }
 
-    /* FILTROS BLANCOS */
+    /* FILTROS BLANCOS FINOS */
     [data-testid="stSelectbox"] > div { 
         background-color: white !important; 
         border: 1px solid #cccccc !important; 
@@ -63,50 +46,57 @@ st.markdown("""
     
     div[data-baseweb="select"] span, div[data-baseweb="select"] div {
         color: black !important;
-        font-size: 18px !important;
         -webkit-text-fill-color: black !important;
     }
 
-    /* Ocultar instrucciones */
+    /* ESTILO DE LAS PESTAÑAS (TABS) */
+    button[data-baseweb="tab"] {
+        font-size: 18px !important;
+        font-weight: bold !important;
+    }
+
+    /* Botón Limpiar */
+    div.stButton > button { 
+        background-color: #f8f9fa; 
+        color: black; 
+        border: 1px solid #cccccc; 
+        border-radius: 5px;
+    }
+    
     [data-testid="InputInstructions"] { display: none !important; }
     </style>
 """, unsafe_allow_html=True)
 
-# 4. FUNCIÓN PARA CARGAR HOJAS (Solución al error de lectura)
+# 4. FUNCIÓN PARA CARGAR HOJAS ESPECÍFICAS
 @st.cache_data(ttl=5)
 def load_sheet_data(sheet_name):
-    # IMPORTANTE: El ID de tu documento se mantiene, pero usamos la URL de exportación 
-    # para que acepte el parámetro 'gid' o el nombre de la hoja.
-    doc_id = "1vRXI7sk1CdNqrMCi3lapZjt8DMoRwjVsiSknQwjgvBjVJHbusZ4GWjDYTJzTl40wictijbYo8ESq7gI"
-    
-    # Esta es la forma más estable de leer hojas por nombre en un archivo publicado
-    url = f"https://docs.google.com/spreadsheets/d/e/2PACX-{doc_id}/pub?sheet={sheet_name}&output=csv"
-    
+    # Usamos el ID de tu documento pero cambiando el final para pedir una hoja por nombre
+    base_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRXI7sk1CdNqrMCi3lapZjt8DMoRwjVsiSknQwjgvBjVJHbusZ4GWjDYTJzTl40wictijbYo8ESq7gI/pub?sheet="
+    url = f"{base_url}{sheet_name}&output=csv"
     try:
         data = pd.read_csv(url)
         data.columns = data.columns.str.strip()
         return data
-    except Exception as e:
-        # Si falla, devolvemos una tabla vacía para no romper la app
+    except:
         return pd.DataFrame(columns=['Nº Documento', 'Fecha', 'Hora', 'Falta', 'Hecho por', 'Realizado por', 'Lo tiene', 'Protocolo'])
 
-# 5. INTERFAZ PRINCIPAL
+# 5. LÓGICA DE INTERFAZ
 st.markdown("<h1 style='text-align: center; color: black;'>Sistema de Búsqueda y Filtros</h1>", unsafe_allow_html=True)
 
-# Nombres de las pestañas (Deben coincidir EXACTAMENTE con las hojas de tu Excel)
+# Definición de pestañas según tu imagen
 tab_names = ["Escrituras", "Poderes", "Recos", "Actas", "Certificaciones", "Declaraciones"]
 tabs = st.tabs(tab_names)
 
+# Procesar cada pestaña
 for i, tab in enumerate(tabs):
     with tab:
         nombre_hoja = tab_names[i]
         df = load_sheet_data(nombre_hoja)
         
-        # --- BUSCADOR ---
-        search_query = st.text_input(f"Buscar en {nombre_hoja}", placeholder="Escriba aquí...", key=f"search_{nombre_hoja}")
+        # --- BUSCADOR Y BOTÓN (Únicos por pestaña) ---
+        search_query = st.text_input("Buscador General", placeholder=f"Buscar en {nombre_hoja}...", key=f"search_{nombre_hoja}")
         
-        # Botón limpiar (ahora más discreto debajo del buscador)
-        if st.button("🧹 Limpiar", key=f"btn_{nombre_hoja}"):
+        if st.button("🧹 Limpiar Filtros", key=f"btn_{nombre_hoja}"):
             st.rerun()
 
         st.markdown("<br>", unsafe_allow_html=True)
@@ -116,16 +106,15 @@ for i, tab in enumerate(tabs):
         
         def get_options(column_name, dataframe):
             if column_name in dataframe.columns:
-                options = ["Todos"] + sorted([str(x) for x in dataframe[column_name].dropna().unique()])
-                return options
+                return ["Todos"] + sorted(list(dataframe[column_name].dropna().unique()))
             return ["Todos"]
 
         with col1:
-            f_hecho = st.selectbox("Hecho por", get_options('Hecho por', df), key=f"f1_{nombre_hoja}")
+            f_hecho = st.selectbox("Filtrar por Hecho", get_options('Hecho por', df), key=f"f1_{nombre_hoja}")
         with col2:
-            f_realizado = st.selectbox("Realizado por", get_options('Realizado por', df), key=f"f2_{nombre_hoja}")
+            f_realizado = st.selectbox("Filtrar por Realizado", get_options('Realizado por', df), key=f"f2_{nombre_hoja}")
         with col3:
-            f_lo_tiene = st.selectbox("Lo tiene", get_options('Lo tiene', df), key=f"f3_{nombre_hoja}")
+            f_lo_tiene = st.selectbox("Filtrar por Lo Tiene", get_options('Lo tiene', df), key=f"f3_{nombre_hoja}")
 
         # --- FILTRADO ---
         df_final = df.copy()
@@ -138,5 +127,5 @@ for i, tab in enumerate(tabs):
         if f_lo_tiene != "Todos":
             df_final = df_final[df_final['Lo tiene'] == f_lo_tiene]
 
-        st.markdown(f"**Registros encontrados: {len(df_final)}**")
+        st.markdown(f"**Mostrando {len(df_final)} registros**")
         st.dataframe(df_final, use_container_width=True, hide_index=True)
