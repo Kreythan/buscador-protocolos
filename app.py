@@ -21,47 +21,56 @@ s0.parentNode.insertBefore(s1,s0);
 """, height=0)
 
 # 3. CSS: PESTAÑAS NEGRAS, LETRA GRANDE Y FILTROS FINOS
+# 3. CSS: SUPER-FORZADO DE TAMAÑOS
 st.markdown("""
     <style>
+    /* 1. APP FONDO BLANCO */
     .stApp { background-color: white !important; }
-    
-    /* PESTAÑAS MUY GRANDES */
-    button[data-baseweb="tab"] {
+
+    /* 2. PESTAÑAS (TABS) - MUY GRANDES */
+    button[data-baseweb="tab"] p {
         font-size: 35px !important; 
         font-weight: bold !important;
-        color: #000000 !important;
-    }
-
-    /* BUSCADOR: Título y Caja de texto */
-    [data-testid="stTextInput"] label {
-        font-size: 25px !important; /* Tamaño del título */
+        color: black !important;
     }
     
-    [data-testid="stTextInput"] > div { 
-        background-color: #000000 !important; 
-        border-radius: 8px !important; 
-    }
-    
-    [data-testid="stTextInput"] input { 
-        font-size: 22px !important; /* Tamaño de lo que escribes */
-        color: white !important; 
-        -webkit-text-fill-color: white !important; 
-    }
-
-    /* FILTROS: Tamaño de letra */
-    [data-testid="stSelectbox"] label {
-        font-size: 22px !important;
-    }
-    
-    div[data-baseweb="select"] span {
-        font-size: 20px !important; /* Tamaño del texto seleccionado */
+    /* 3. TÍTULOS DE BUSCADOR Y FILTROS (LABELS) */
+    .stWidgetLabel p {
+        font-size: 28px !important;
+        font-weight: bold !important;
         color: black !important;
     }
 
+    /* 4. CAJA DE BUSQUEDA (TEXTO INTERIOR) */
+    [data-testid="stTextInput"] input {
+        font-size: 25px !important;
+        color: white !important;
+        background-color: black !important;
+        -webkit-text-fill-color: white !important;
+    }
+    
+    /* 5. CAJAS DE FILTROS (TEXTO INTERIOR) */
+    [data-testid="stSelectbox"] div[data-baseweb="select"] {
+        font-size: 22px !important;
+        color: black !important;
+    }
+
+    /* 6. BOTÓN LIMPIAR */
+    div.stButton > button {
+        font-size: 22px !important;
+        padding: 10px 25px !important;
+        height: auto !important;
+    }
+
+    /* 7. TEXTO DE REGISTROS ENCONTRADOS (Línea 121 aprox) */
+    .stMarkdown p {
+        font-size: 24px !important;
+    }
+
+    /* Ocultar basura visual de Streamlit */
     [data-testid="InputInstructions"] { display: none !important; }
     </style>
 """, unsafe_allow_html=True)
-
 # 4. FUNCIÓN DE CARGA POR GID (Identificador único de hoja)
 @st.cache_data(ttl=5)
 def load_data_by_gid(gid_number):
