@@ -165,40 +165,41 @@ for i, tab in enumerate(tabs):
 # --- BURBUJA DE CHAT FLOTANTE Y FIJA ---
 # --- SOLUCIÓN DEFINITIVA: POP-UP FLOTANTE GLOBAL ---
 # --- LA ÚLTIMA SOLUCIÓN: FORZADO DE CAPA FLOTANTE ---
+# --- POP-UP FLOTANTE ABSOLUTO (FUERA DE ESTRUCTURA) ---
 st.markdown("""
     <style>
-    /* 1. Obligamos a que el contenedor del componente sea invisible y flote */
-    [data-testid="stHorizontalBlock"] > div, 
-    [data-testid="stVerticalBlock"] > div {
-        position: static !important;
-    }
-
-    /* 2. Posicionamiento absoluto respecto a la VENTANA (no a la app) */
+    /* 1. ESTO ES LO MÁS IMPORTANTE: 
+       Hacemos que el contenedor de Streamlit sea "invisible" para el diseño 
+       pero que su contenido (el chat) flote libremente. */
     div.element-container:has(iframe[title="streamlit.components.v1.html"]) {
         position: fixed !important;
         bottom: 20px !important;
         right: 20px !important;
-        z-index: 999999 !important;
         width: 100px !important;
         height: 100px !important;
+        z-index: 999999 !important;
     }
 
-    /* 3. El iframe interno */
+    /* 2. Forzamos al iframe del chat a ocupar su lugar en la esquina */
     iframe[title="streamlit.components.v1.html"] {
         position: fixed !important;
         bottom: 20px !important;
         right: 20px !important;
         z-index: 1000000 !important;
+        border: none !important;
+        /* Permitimos que se agrande cuando el usuario lo abra */
+        transition: width 0.3s, height 0.3s;
     }
-    
-    /* 4. Fix para que no se corte al hacer scroll */
-    .main .block-container {
-        position: static !important;
+
+    /* 3. Cuando el usuario interactúa, ampliamos el área de clic */
+    iframe[title="streamlit.components.v1.html"]:hover {
+        width: 350px !important;
+        height: 550px !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# Inyectamos el chat
+# Inyectamos el chat sin contenedores extra de Streamlit
 st.components.v1.html("""
     <script type="text/javascript">
         var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
@@ -211,4 +212,4 @@ st.components.v1.html("""
             s0.parentNode.insertBefore(s1,s0);
         })();
     </script>
-""", height=520)
+""", height=550)
