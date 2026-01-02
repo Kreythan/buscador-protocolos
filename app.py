@@ -152,48 +152,41 @@ for i, tab in enumerate(tabs):
         if f_lo_tiene != "Todos": df_final = df_final[df_final['Lo tiene'].astype(str) == f_lo_tiene]
 
         st.markdown(f"<p style='font-size: 24px; color: {text_color};'>Registros: {len(df_final)}</p>", unsafe_allow_html=True)
-        st.dataframe(df_final, use_container_width=True, hide_index=True)
+        # Muestra la tabla con una altura fija para máximo 10 filas aprox.
+        st.dataframe(df_final, use_container_width=True, hide_index=True, height=400)
 # 3. CHAT TAWK.TO (Versión corregida)
 # --- FORZADO DE VISIBILIDAD DEL CHAT ---
 # --- FORZADO DE VENTANA DE CHAT COMPLETA ---
 # --- CHAT FLOTANTE EN LA ESQUINA INFERIOR DERECHA ---
 # --- CHAT FLOTANTE POSICIONADO ABAJO A LA DERECHA ---
 # --- CONFIGURACIÓN FINAL DEL CHAT FLOTANTE ---
+# --- FORZAR CHAT FIJO EN LA PANTALLA ---
 st.markdown("""
     <style>
-    /* 1. Localizamos el iframe del chat y lo sacamos del flujo normal */
+    /* Buscamos el iframe que contiene el chat y lo fijamos a la ventana del navegador */
     iframe[title="streamlit.components.v1.html"] {
         position: fixed !important;
-        bottom: 20px !important;
-        right: 20px !important;
-        width: 350px !important; /* Ancho suficiente para la ventana abierta */
-        height: 520px !important; /* Alto suficiente para la ventana abierta */
-        z-index: 999999 !important;
+        bottom: 20px !important;  /* Distancia desde el borde inferior */
+        right: 20px !important;   /* Distancia desde el borde derecho */
+        z-index: 999999 !important; /* Asegura que esté por encima de la tabla */
         border: none !important;
-        background: transparent !important;
-    }
-
-    /* 2. Ajuste para que el contenedor no bloquee clics en la tabla */
-    /* Esto hace que el área del iframe sea 'invisible' al mouse excepto donde está el chat */
-    iframe[title="streamlit.components.v1.html"] {
-        pointer-events: none !important;
+        height: 520px !important; /* Espacio para que la ventana se abra hacia arriba */
+        width: 350px !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# El componente debe tener el script de Tawk.to y un pequeño truco de CSS interno
-components.html("""
-    <div style="pointer-events: auto !important;">
-        <script type="text/javascript">
-            var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-            (function(){
-                var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-                s1.async=true;
-                s1.src='https://embed.tawk.to/695732610a00df198198e359/1jdu9pk10';
-                s1.charset='UTF-8';
-                s1.setAttribute('crossorigin','*');
-                s0.parentNode.insertBefore(s1,s0);
-            })();
-        </script>
-    </div>
+# Asegúrate de que el componente de abajo sea el único que carga el script de Tawk.to
+st.components.v1.html("""
+    <script type="text/javascript">
+        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+        (function(){
+            var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+            s1.async=true;
+            s1.src='https://embed.tawk.to/695732610a00df198198e359/1jdu9pk10';
+            s1.charset='UTF-8';
+            s1.setAttribute('crossorigin','*');
+            s0.parentNode.insertBefore(s1,s0);
+        })();
+    </script>
 """, height=520)
