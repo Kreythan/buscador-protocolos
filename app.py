@@ -63,14 +63,9 @@ st.dataframe(df, use_container_width=True, hide_index=True)
 
 # 5. CONTENEDOR ESPECIAL PARA EL CHAT (Al final para evitar errores)
 # Usamos un truco para que el script no se rompa por las comillas
-tawk_script = "
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
 var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-Tawk_API.customStyle = {
-    visibility : {
-        desktop : { xOffset : 20, yOffset : 20 },
-        mobile : { xOffset : 10, yOffset : 10 }
-    }
-};
 (function(){
 var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
 s1.async=true;
@@ -79,7 +74,8 @@ s1.charset='UTF-8';
 s1.setAttribute('crossorigin','*');
 s0.parentNode.insertBefore(s1,s0);
 })();
-"
+</script>
+<!--End of Tawk.to Script-->
 
 # Inyectamos el componente en un contenedor pequeño
 with st.container():
