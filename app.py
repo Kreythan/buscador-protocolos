@@ -20,7 +20,7 @@ s0.parentNode.insertBefore(s1,s0);
 </script>
 """, height=0)
 
-# 3. CSS: BUSCADOR NEGRO Y FILTROS BLANCO PURO
+# 3. CSS: BUSCADOR NEGRO Y FILTROS FINOS CON LETRAS NEGRAS
 st.markdown("""
     <style>
     .stApp { background-color: white !important; }
@@ -30,36 +30,40 @@ st.markdown("""
     [data-testid="stTextInput"] > div { 
         background-color: #000000 !important; 
         border-radius: 8px !important; 
-        border: 2px solid black !important; 
+        border: 1px solid #333333 !important; /* Borde más fino */
     }
     [data-testid="stTextInput"] input { 
         color: white !important; 
         -webkit-text-fill-color: white !important; 
     }
 
-    /* FILTROS BLANCO PURO */
+    /* FILTROS BLANCOS CON BORDES FINOS */
     [data-testid="stSelectbox"] > div { 
         background-color: white !important; 
-        border: 2px solid black !important; 
-        border-radius: 8px !important; 
+        border: 1px solid #cccccc !important; /* Borde mucho más fino y gris claro */
+        border-radius: 6px !important; 
     }
     
-    /* Forzar fondo blanco dentro del selector cuando está cerrado y abierto */
+    /* FORZAR LETRAS NEGRAS EN SELECCIÓN (Incluso al estar seleccionado) */
+    div[data-baseweb="select"] span, 
+    div[data-baseweb="select"] div,
+    [data-testid="stSelectbox"] p {
+        color: black !important;
+        -webkit-text-fill-color: black !important;
+    }
+    
+    /* Fondo blanco al abrir la lista */
     div[data-baseweb="select"] > div {
         background-color: white !important;
-    }
-    
-    /* Texto de los filtros en negro */
-    [data-testid="stSelectbox"] div[data-baseweb="select"] span { 
-        color: black !important; 
     }
 
     /* Botón Limpiar */
     div.stButton > button { 
-        background-color: #f0f2f6; 
+        background-color: #f8f9fa; 
         color: black; 
-        border: 1px solid black; 
-        font-weight: bold; 
+        border: 1px solid #cccccc; 
+        font-weight: bold;
+        border-radius: 5px;
     }
     div.stButton > button:hover { 
         background-color: #ff4b4b; 
@@ -67,15 +71,16 @@ st.markdown("""
         border: 1px solid #ff4b4b; 
     }
 
-    /* Ocultar instrucciones de Streamlit */
+    /* Eliminar sombras e instrucciones */
     [data-testid="InputInstructions"] { display: none !important; }
+    .stSelectbox div[role="button"] { border: none !important; }
     </style>
 """, unsafe_allow_html=True)
 
-# 4. CARGA DE DATOS (Enlace corregido a CSV)
+# 4. CARGA DE DATOS (URL CORREGIDA)
 @st.cache_data(ttl=5)
 def load_data():
-    # Corregido: de output=ods a output=csv
+    # URL configurada como CSV para que Pandas pueda leerla
     url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRXI7sk1CdNqrMCi3lapZjt8DMoRwjVsiSknQwjgvBjVJHbusZ4GWjDYTJzTl40wictijbYo8ESq7gI/pub?output=csv" 
     try:
         data = pd.read_csv(url)
