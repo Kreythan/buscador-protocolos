@@ -5,7 +5,7 @@ import streamlit.components.v1 as components
 # 1. CONFIGURACIÓN DE PÁGINA
 st.set_page_config(page_title="Búsqueda Protocolos", layout="wide")
 
-# 2. CHAT TAWK.TO (Script Original)
+# 2. CHAT TAWK.TO
 components.html("""
 <script type="text/javascript">
 var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
@@ -20,54 +20,56 @@ s0.parentNode.insertBefore(s1,s0);
 </script>
 """, height=0)
 
-# 3. CSS PARA DISEÑO LIMPIO (BLANCO TOTAL Y BORDE ÚNICO)
+# 3. CSS MAESTRO: LIMPIEZA TOTAL DE BORDES INTERNOS
 st.markdown("""
     <style>
-    /* Fondo general blanco */
+    /* Fondo general */
     .stApp { background-color: white !important; }
     
-    /* Títulos de los campos */
+    /* Títulos */
     label, .stMarkdown p {
         font-size: 20px !important;
         font-weight: bold !important;
         color: black !important;
-        margin-bottom: 8px !important;
     }
 
-    /* CORRECCIÓN: Fondo blanco total (quita el plomo) y borde negro simple */
+    /* ELIMINAR BORDE INTERNO AL ESCRIBIR (Focus) */
+    /* Aplicamos transparencia a cualquier borde que Streamlit intente dibujar dentro */
+    [data-testid="stTextInput"] > div > div, 
+    [data-testid="stSelectbox"] > div > div {
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    /* BORDE EXTERIOR ÚNICO: Negro sólido y fondo blanco puro */
     input, div[data-baseweb="select"] > div {
         background-color: white !important; 
-        border: 2.5px solid #000000 !important; 
-        box-shadow: none !important; /* Elimina sombras que parecen doble borde */
+        border: 2px solid #000000 !important; 
         border-radius: 8px !important;
         height: 50px !important;
+        box-shadow: none !important;
     }
 
-    /* Asegurar que el fondo del contenedor del select sea blanco */
+    /* Forzar que el fondo no se vuelva plomo al seleccionar */
     div[data-baseweb="select"] {
-        background-color: transparent !important;
-        border: none !important;
+        background-color: white !important;
     }
 
-    /* Texto negro dentro de los cuadros */
+    /* Texto negro */
     input, div[data-baseweb="select"] div, div[data-baseweb="select"] span {
         color: black !important;
         font-size: 18px !important;
     }
 
-    /* Eliminar el efecto de borde azul/sombra al hacer clic */
+    /* Quitar cualquier sombra o resplandor al hacer clic */
     input:focus, div[data-baseweb="select"]:focus-within {
+        outline: none !important;
         border-color: #000000 !important;
         box-shadow: none !important;
-        outline: none !important;
     }
-
-    /* Quitar bordes internos de Streamlit */
-    [data-testid="stTextInput"] > div, [data-testid="stSelectbox"] > div {
-        border: none !important;
-        box-shadow: none !important;
-    }
-
+    
+    /* Limpieza de la tabla */
     .stDataFrame { border: none !important; }
     </style>
 """, unsafe_allow_html=True)
@@ -75,52 +77,33 @@ st.markdown("""
 # 4. CARGA DE DATOS
 @st.cache_data(ttl=10)
 def load_data():
-    url = "TU_LINK_AQUI" # Reemplaza con tu link real de Google Sheets
+    url = "TU_LINK_AQUI" 
     try:
         return pd.read_csv(url)
     except:
-        return pd.DataFrame({
-            'Hecho': ['Ejemplo A', 'Ejemplo B'], 
-            'Realizado': ['SI', 'NO'], 
-            'Lo Tiene': ['SI', 'NO']
-        })
+        return pd.DataFrame({'Hecho': ['Prueba'], 'Realizado': ['SI'], 'Lo Tiene': ['SI']})
 
 df = load_data()
 
-# 5. INTERFAZ VISUAL
-st.markdown("<h1 style='text-align: center; color: black; font-size: 36px;'>Sistema de Búsqueda y Filtros</h1>", unsafe_allow_html=True)
+# 5. INTERFAZ
+st.markdown("<h1 style='text-align: center; color: black;'>Sistema de Búsqueda</h1>", unsafe_allow_html=True)
 
-# Buscador General
-search_query = st.text_input("Buscador General (Escribe aquí)", placeholder="🔍 Buscar...")
+search_query = st.text_input("Buscador General", placeholder="Escriba para buscar...")
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# Filtros en 3 columnas
 col1, col2, col3 = st.columns(3)
-
 with col1:
-    opciones_hecho = ["Todos"] + (sorted(list(df['Hecho'].dropna().unique())) if 'Hecho' in df.columns else [])
-    f_hecho = st.selectbox("Filtrar por Hecho", opciones_hecho)
-
+    f_hecho = st.selectbox("Filtrar por Hecho", ["Todos"] + sorted(list(df['Hecho'].dropna().unique())) if 'Hecho' in df.columns else ["Todos"])
 with col2:
-    opciones_realizado = ["Todos"] + (sorted(list(df['Realizado'].dropna().unique())) if 'Realizado' in df.columns else [])
-    f_realizado = st.selectbox("Filtrar por Realizado", opciones_realizado)
-
+    f_realizado = st.selectbox("Filtrar por Realizado", ["Todos"] + sorted(list(df['Realizado'].dropna().unique())) if 'Realizado' in df.columns else ["Todos"])
 with col3:
-    opciones_lo_tiene = ["Todos"] + (sorted(list(df['Lo Tiene'].dropna().unique())) if 'Lo Tiene' in df.columns else [])
-    f_lo_tiene = st.selectbox("Filtrar por Lo Tiene", opciones_lo_tiene)
+    f_lo_tiene = st.selectbox("Filtrar por Lo Tiene", ["Todos"] + sorted(list(df['Lo Tiene'].dropna().unique())) if 'Lo Tiene' in df.columns else ["Todos"])
 
-# Lógica de Filtrado
+# Filtrado y Tabla
 df_final = df.copy()
 if search_query:
     df_final = df_final[df_final.apply(lambda row: row.astype(str).str.contains(search_query, case=False).any(), axis=1)]
-if f_hecho != "Todos":
-    df_final = df_final[df_final['Hecho'] == f_hecho]
-if f_realizado != "Todos":
-    df_final = df_final[df_final['Realizado'] == f_realizado]
-if f_lo_tiene != "Todos":
-    df_final = df_final[df_final['Lo Tiene'] == f_lo_tiene]
 
-# 6. TABLA DE RESULTADOS
-st.markdown(f"<h3 style='color: black;'>Registros encontrados: {len(df_final)}</h3>", unsafe_allow_html=True)
+st.markdown(f"**Registros: {len(df_final)}**")
 st.dataframe(df_final, use_container_width=True)
