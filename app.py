@@ -18,7 +18,7 @@ s1.setAttribute('crossorigin','*');
 s0.parentNode.insertBefore(s1,s0);
 })();
 </script>
-""", height=0)
+""", height=10)
 
 # 3. CSS: LIMPIEZA TOTAL Y BUSCADOR BLANCO
 st.markdown("""
@@ -47,7 +47,7 @@ st.markdown("""
 
     /* QUITAR EL FONDO GRIS CUANDO SE HACE CLIC (FOCUS) */
     [data-testid="stTextInput"] > div:focus-within {
-        background-color: white !important;
+        background-color: black !important;
         border-color: #000000 !important;
         box-shadow: none !important;
     }
@@ -60,10 +60,6 @@ st.markdown("""
 
     /* TEXTO NEGRO EN TODO */
     input, div[data-baseweb="select"] span {
-    background-color: white !important;
-        color: black !important;
-        border: none !important;
-        box-shadow: none !important;
         color: black !important;
         font-size: 18px !important;
     }
