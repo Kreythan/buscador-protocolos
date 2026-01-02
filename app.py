@@ -29,7 +29,7 @@ st.markdown("""
 
     /* 2. PESTAÑAS (TABS) - MUY GRANDES */
     button[data-baseweb="tab"] p {
-        font-size: 35px !important; 
+        font-size: 28px !important; 
         font-weight: bold !important;
         color: black !important;
     }
