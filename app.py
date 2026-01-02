@@ -20,61 +20,62 @@ s0.parentNode.insertBefore(s1,s0);
 </script>
 """, height=0)
 
-# 3. CSS: BLOQUEO DE COLOR OSCURO EN BUSCADOR
+# 3. CSS: DIFERENCIACIÓN DE COLORES (BUSCADOR BLANCO / FILTROS NEGRO)
 st.markdown("""
     <style>
     .stApp { background-color: white !important; }
     label { font-size: 20px !important; font-weight: bold !important; color: black !important; }
 
-    /* --- BARRA DE BÚSQUEDA GENERAL (FORZAR OSCURO SIEMPRE) --- */
-    /* Este bloque asegura que el contenedor no se vuelva blanco al escribir */
+    /* --- BARRA DE BÚSQUEDA GENERAL (TEXTO BLANCO) --- */
     [data-testid="stTextInput"] > div, 
-    [data-testid="stTextInput"] > div:focus-within,
-    [data-testid="stTextInput"] > div[data-baseweb="input"] {
+    [data-testid="stTextInput"] > div:focus-within {
         background-color: #262730 !important; 
         border: 2px solid #000000 !important;
         border-radius: 8px !important;
         box-shadow: none !important;
     }
 
-    /* Forzar letras blancas y fondo transparente del input interno */
+    /* Forzar letras blancas SOLO en el input de texto */
     [data-testid="stTextInput"] input {
         color: white !important;
-        background-color: transparent !important;
-        -webkit-text-fill-color: white !important; /* Para navegadores basados en Safari/Chrome */
+        -webkit-text-fill-color: white !important;
     }
 
-    /* Eliminar el cuadrito "Press Enter" y botones */
+    /* Ocultar instrucciones "Press Enter" */
     [data-testid="stTextInput"] [data-testid="InputInstructions"],
     [data-testid="stTextInput"] button {
         display: none !important;
     }
 
-    /* --- FILTROS (SELECTBOX) --- */
+    /* --- FILTROS SELECTBOX (TEXTO NEGRO SIEMPRE) --- */
     [data-testid="stSelectbox"] > div {
         background-color: white !important;
         border: 2px solid #000000 !important;
         border-radius: 8px !important;
     }
 
-    div[data-baseweb="select"] input {
+    /* Forzar texto negro en el valor seleccionado y en la lista */
+    [data-testid="stSelectbox"] div[data-baseweb="select"] span,
+    [data-testid="stSelectbox"] div[data-baseweb="select"] div {
+        color: black !important;
+        -webkit-text-fill-color: black !important;
+    }
+
+    /* Quitar cursor de escritura en filtros */
+    [data-testid="stSelectbox"] input {
         caret-color: transparent !important;
         cursor: pointer !important;
     }
 
-    div[data-baseweb="select"] span {
-        color: black !important;
-        font-size: 18px !important;
-    }
-
-    /* Limpieza de bordes internos */
+    /* --- LIMPIEZA DE INTERFACES --- */
     [data-testid="stTextInput"] > div > div, 
     [data-testid="stSelectbox"] > div > div {
         border: none !important;
         box-shadow: none !important;
         background-color: transparent !important;
     }
-    
+
+    /* Fondo blanco para la lista desplegable de los filtros */
     div[data-baseweb="select"] > div {
         background-color: white !important;
     }
