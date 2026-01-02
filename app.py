@@ -162,35 +162,33 @@ for i, tab in enumerate(tabs):
 # --- CONFIGURACIÓN FINAL DEL CHAT FLOTANTE ---
 # --- FORZAR CHAT FIJO EN LA PANTALLA ---
 # --- CHAT TOTALMENTE FIJO (STICKY) ---
+# --- BURBUJA DE CHAT FLOTANTE Y FIJA ---
 st.markdown("""
     <style>
-    /* Forzamos que el contenedor del iframe no se mueva con el scroll */
+    /* Fijamos el contenedor del chat abajo a la derecha */
     iframe[title="streamlit.components.v1.html"] {
         position: fixed !important;
         bottom: 20px !important;
         right: 20px !important;
         z-index: 999999 !important;
         border: none !important;
-    }
-
-    /* Ajuste para evitar que el contenedor invisible bloquee la tabla */
-    iframe[title="streamlit.components.v1.html"] {
-        pointer-events: none !important;
-        width: 100px !important; /* Tamaño pequeño cuando está cerrado */
+        /* El contenedor es pequeño inicialmente para no tapar la tabla */
+        width: 100px !important; 
         height: 100px !important;
+        background: transparent !important;
+        pointer-events: none !important; /* No bloquea clics fuera de la burbuja */
     }
 
-    /* Cuando el chat se activa o necesitas espacio para la ventana abierta */
-    /* Nota: Tawk.to maneja su propia expansión, pero el contenedor de Streamlit debe permitirlo */
-    .stComponents {
-        position: fixed !important;
-        bottom: 0 !important;
-        right: 0 !important;
+    /* Cuando el chat se abre, Tawk.to expande su contenido, 
+       pero necesitamos que el iframe de Streamlit lo permita */
+    iframe[title="streamlit.components.v1.html"]:hover,
+    iframe[title="streamlit.components.v1.html"]:active {
+        width: 350px !important;
+        height: 520px !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# El script debe ir dentro de un div que permita clics
 st.components.v1.html("""
     <div style="pointer-events: auto !important;">
         <script type="text/javascript">
@@ -205,4 +203,4 @@ st.components.v1.html("""
             })();
         </script>
     </div>
-""", height=600) # Dejamos altura suficiente para cuando el usuario abra la ventana
+""", height=520)
