@@ -79,7 +79,7 @@ if search_query:
 
 # TABLA FINAL: Cambiamos width=None por use_container_width=True
 st.markdown('<b style="color: black !important;">Resultados:</b>', unsafe_allow_html=True)
-st.dataframe(filtered_df, use_container_width=True, hide_index=True)
+
 
 # EL CHAT (mantener al final)
 components.html("""
@@ -94,4 +94,4 @@ s1.setAttribute('crossorigin','*');
 s0.parentNode.insertBefore(s1,s0);
 })();
 </script>
-""", height=0)
+""", height=1)
