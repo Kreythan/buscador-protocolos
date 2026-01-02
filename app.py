@@ -20,34 +20,49 @@ s0.parentNode.insertBefore(s1,s0);
 </script>
 """, height=0)
 
-# 3. CSS PARA LETRAS GRANDES Y FONDO CLARO
+# 3. CSS PARA CUADROS BLANCOS Y LETRAS GRANDES
 st.markdown("""
     <style>
-    /* Forzar fondo blanco */
+    /* Fondo general de la app siempre blanco */
     .stApp { background-color: white !important; }
     
-    /* AGRANDAR LETRAS DE TODO EL SISTEMA */
-    html, body, [class*="st-"] {
-        font-size: 20px !important;
-        color: black !important;
-    }
-
-    /* Títulos de los filtros más grandes y negros */
+    /* Etiquetas de los filtros (Títulos) */
     label, .stMarkdown p {
         font-size: 22px !important;
         font-weight: bold !important;
         color: black !important;
     }
 
-    /* Agrandar texto dentro de los cuadros (Inputs y Selects) */
+    /* UNIFICACIÓN: Buscador y Selectores con fondo BLANCO */
     input, div[data-baseweb="select"] {
+        background-color: #FFFFFF !important; /* Fondo Blanco */
+        border: 2px solid #262730 !important;  /* Borde oscuro para contraste */
+        border-radius: 10px !important;
+        height: 55px !important;
+    }
+
+    /* Forzar color de texto NEGRO dentro de los cuadros */
+    input, div[data-baseweb="select"] div, div[data-baseweb="select"] span {
+        color: black !important;
         font-size: 20px !important;
-        height: 50px !important;
-        border: 2px solid black !important;
+    }
+
+    /* Estilo para el buscador específico al escribir */
+    .stTextInput input {
+        color: black !important;
+    }
+
+    /* Lista desplegable de los filtros */
+    div[role="listbox"] {
+        background-color: white !important;
     }
     
-    /* Eliminar espacios vacíos innecesarios */
-    .block-container { padding-top: 2rem; }
+    div[role="option"] {
+        color: black !important;
+    }
+
+    /* Quitar bordes rojos de error o advertencia */
+    .stDataFrame { border: none !important; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -59,17 +74,21 @@ def load_data():
     try:
         return pd.read_csv(url)
     except:
-        return pd.DataFrame({'Estado': ['Cargando...'], 'Aviso': ['Pega el link de Sheets']})
+        return pd.DataFrame({
+            'Hecho': ['Ejemplo A', 'Ejemplo B'], 
+            'Realizado': ['SI', 'NO'], 
+            'Lo Tiene': ['SI', 'NO']
+        })
 
 df = load_data()
 
 # 5. INTERFAZ VISUAL
-st.markdown("<h1 style='text-align: center; color: black; font-size: 40px;'>Sistema de Búsqueda y Filtros</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: black; font-size: 42px;'>Sistema de Búsqueda y Filtros</h1>", unsafe_allow_html=True)
 
 # Buscador General
 search_query = st.text_input("Buscador General (Escribe aquí)", placeholder="🔍 Buscar...")
 
-st.markdown("---")
+st.markdown("<br>", unsafe_allow_html=True)
 
 # Filtros en 3 columnas
 col1, col2, col3 = st.columns(3)
@@ -97,6 +116,6 @@ if f_realizado != "Todos":
 if f_lo_tiene != "Todos":
     df_final = df_final[df_final['Lo Tiene'] == f_lo_tiene]
 
-# 6. TABLA DE RESULTADOS (Sin error de width)
-st.write(f"**Registros encontrados: {len(df_final)}**")
+# 6. TABLA DE RESULTADOS
+st.markdown(f"<h3 style='color: black;'>Registros encontrados: {len(df_final)}</h3>", unsafe_allow_html=True)
 st.dataframe(df_final, use_container_width=True)
