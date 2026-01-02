@@ -16,19 +16,31 @@ def toggle_theme():
 # 3. CHAT TAWK.TO (Versión corregida)
 # --- FORZADO DE VISIBILIDAD DEL CHAT ---
 # --- FORZADO DE VENTANA DE CHAT COMPLETA ---
-components.html(f"""
-    <script type="text/javascript">
-        var Tawk_API=Tawk_API||{{}}, Tawk_LoadStart=new Date();
-        (function(){{
-            var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-            s1.async=true;
-            s1.src='https://embed.tawk.to/695732610a00df198198e359/1jdu9pk10';
-            s1.charset='UTF-8';
-            s1.setAttribute('crossorigin','*');
-            s0.parentNode.insertBefore(s1,s0);
-        }})();
-    </script>
-""", height=500) # Aumentamos la altura a 500 para que la ventana quepa al abrirse
+# --- CHAT FLOTANTE EN LA ESQUINA INFERIOR DERECHA ---
+st.components.v1.html("""
+    <style>
+        /* Este estilo asegura que el contenedor del chat flote sobre la app */
+        #tawk-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 999999;
+        }
+    </style>
+    <div id="tawk-container">
+        <script type="text/javascript">
+            var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+            (function(){
+                var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+                s1.async=true;
+                s1.src='https://embed.tawk.to/695732610a00df198198e359/1jdu9pk10';
+                s1.charset='UTF-8';
+                s1.setAttribute('crossorigin','*');
+                s0.parentNode.insertBefore(s1,s0);
+            })();
+        </script>
+    </div>
+""", height=600) # Mantenemos el height alto para que la ventana de chat tenga espacio al abrirse
 
 
 # 4. CSS DINÁMICO SEGÚN EL MODO
