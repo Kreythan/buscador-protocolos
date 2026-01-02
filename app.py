@@ -5,7 +5,7 @@ import streamlit.components.v1 as components
 # 1. CONFIGURACIÓN DE PÁGINA
 st.set_page_config(page_title="Búsqueda Protocolos", layout="wide")
 
-# 2. CHAT TAWK.TO (Sin tocar nada del script original)
+# 2. CHAT TAWK.TO (Script Original)
 components.html("""
 <script type="text/javascript">
 var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
@@ -20,24 +20,34 @@ s0.parentNode.insertBefore(s1,s0);
 </script>
 """, height=0)
 
-# 3. CSS PARA SOLUCIONAR EL MODO OSCURO (Letras Negras)
+# 3. CSS PARA LETRAS GRANDES Y FONDO CLARO
 st.markdown("""
     <style>
     /* Forzar fondo blanco */
     .stApp { background-color: white !important; }
     
-    /* Forzar texto negro en todo (títulos, etiquetas y tablas) */
-    h1, h2, h3, p, span, label, b, .stMarkdownContainer p { 
-        color: black !important; 
-        -webkit-text-fill-color: black !important;
-    }
-    
-    /* Estilo para los cuadros de búsqueda y selectores */
-    div[data-baseweb="select"] > div, input {
-        border: 2px solid black !important;
-        background-color: #f0f2f6 !important;
+    /* AGRANDAR LETRAS DE TODO EL SISTEMA */
+    html, body, [class*="st-"] {
+        font-size: 20px !important;
         color: black !important;
     }
+
+    /* Títulos de los filtros más grandes y negros */
+    label, .stMarkdown p {
+        font-size: 22px !important;
+        font-weight: bold !important;
+        color: black !important;
+    }
+
+    /* Agrandar texto dentro de los cuadros (Inputs y Selects) */
+    input, div[data-baseweb="select"] {
+        font-size: 20px !important;
+        height: 50px !important;
+        border: 2px solid black !important;
+    }
+    
+    /* Eliminar espacios vacíos innecesarios */
+    .block-container { padding-top: 2rem; }
     </style>
 """, unsafe_allow_html=True)
 
@@ -53,45 +63,40 @@ def load_data():
 
 df = load_data()
 
-# 5. INTERFAZ (Corrigiendo el error de 'label' vacío de tus logs)
-st.title("Sistema de Búsqueda y Filtros")
+# 5. INTERFAZ VISUAL
+st.markdown("<h1 style='text-align: center; color: black; font-size: 40px;'>Sistema de Búsqueda y Filtros</h1>", unsafe_allow_html=True)
 
-# SOLUCIÓN LOGS: No dejar el label vacío, usar un nombre real
-search_query = st.text_input(label="Buscador General", placeholder="🔍 Buscar en todos los campos...")
+# Buscador General
+search_query = st.text_input("Buscador General (Escribe aquí)", placeholder="🔍 Buscar...")
 
 st.markdown("---")
 
+# Filtros en 3 columnas
 col1, col2, col3 = st.columns(3)
+
 with col1:
-    f_hecho = st.selectbox(label="Filtrar por Hecho", options=["Todos"] + (list(df['Hecho'].unique()) if 'Hecho' in df.columns else []))
+    opciones_hecho = ["Todos"] + (sorted(list(df['Hecho'].dropna().unique())) if 'Hecho' in df.columns else [])
+    f_hecho = st.selectbox("Filtrar por Hecho", opciones_hecho)
+
 with col2:
-    f_realizado = st.selectbox(label="Filtrar por Realizado", options=["Todos"] + (list(df['Realizado'].unique()) if 'Realizado' in df.columns else []))
+    opciones_realizado = ["Todos"] + (sorted(list(df['Realizado'].dropna().unique())) if 'Realizado' in df.columns else [])
+    f_realizado = st.selectbox("Filtrar por Realizado", opciones_realizado)
+
 with col3:
-    f_lo_tiene = st.selectbox(label="Filtrar por Lo Tiene", options=["Todos"] + (list(df['Lo Tiene'].unique()) if 'Lo Tiene' in df.columns else []))
+    opciones_lo_tiene = ["Todos"] + (sorted(list(df['Lo Tiene'].dropna().unique())) if 'Lo Tiene' in df.columns else [])
+    f_lo_tiene = st.selectbox("Filtrar por Lo Tiene", opciones_lo_tiene)
 
-# SOLUCIÓN LOGS: Actualización de use_container_width
-st.dataframe(df, width=None) # width=None o width='stretch' según tu versión
-# Lógica de filtrado (mantener igual)
-filtered_df = df.copy()
+# Lógica de Filtrado
+df_final = df.copy()
 if search_query:
-    mask = df.apply(lambda row: row.astype(str).str.contains(search_query, case=False).any(), axis=1)
-    filtered_df = filtered_df[mask]
+    df_final = df_final[df_final.apply(lambda row: row.astype(str).str.contains(search_query, case=False).any(), axis=1)]
+if f_hecho != "Todos":
+    df_final = df_final[df_final['Hecho'] == f_hecho]
+if f_realizado != "Todos":
+    df_final = df_final[df_final['Realizado'] == f_realizado]
+if f_lo_tiene != "Todos":
+    df_final = df_final[df_final['Lo Tiene'] == f_lo_tiene]
 
-# TABLA FINAL: Cambiamos width=None por use_container_width=True
-st.markdown('<b style="color: black !important;">Resultados:</b>', unsafe_allow_html=True)
-
-
-# EL CHAT (mantener al final)
-components.html("""
-<script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/695732610a00df198198e359/1jdu9pk10';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
-</script>
-""", height=1)
+# 6. TABLA DE RESULTADOS (Sin error de width)
+st.write(f"**Registros encontrados: {len(df_final)}**")
+st.dataframe(df_final, use_container_width=True)
