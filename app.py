@@ -163,44 +163,49 @@ for i, tab in enumerate(tabs):
 # --- FORZAR CHAT FIJO EN LA PANTALLA ---
 # --- CHAT TOTALMENTE FIJO (STICKY) ---
 # --- BURBUJA DE CHAT FLOTANTE Y FIJA ---
+# --- SOLUCIÓN DEFINITIVA: POP-UP FLOTANTE GLOBAL ---
 st.markdown("""
     <style>
-    /* Fijamos el contenedor del chat abajo a la derecha */
+    /* 1. Forzar al contenedor del chat a salirse de la estructura de Streamlit */
+    [data-testid="stVerticalBlock"] > div:last-child {
+        position: static !important;
+    }
+
+    /* 2. El iframe del chat ahora se posiciona respecto a la ventana del navegador */
     iframe[title="streamlit.components.v1.html"] {
         position: fixed !important;
         bottom: 20px !important;
         right: 20px !important;
-        z-index: 999999 !important;
-        border: none !important;
-        /* El contenedor es pequeño inicialmente para no tapar la tabla */
-        width: 100px !important; 
+        z-index: 1000000 !important; /* Capa máxima */
+        width: 100px !important;
         height: 100px !important;
-        background: transparent !important;
-        pointer-events: none !important; /* No bloquea clics fuera de la burbuja */
+        border: none !important;
     }
 
-    /* Cuando el chat se abre, Tawk.to expande su contenido, 
-       pero necesitamos que el iframe de Streamlit lo permita */
-    iframe[title="streamlit.components.v1.html"]:hover,
-    iframe[title="streamlit.components.v1.html"]:active {
-        width: 350px !important;
-        height: 520px !important;
+    /* 3. Permitir que el área se agrande cuando el usuario abre el chat */
+    iframe[title="streamlit.components.v1.html"]:hover {
+        width: 400px !important;
+        height: 600px !important;
+    }
+
+    /* 4. IMPORTANTE: Esto evita que el contenedor padre lo oculte al hacer scroll */
+    [data-testid="stAppViewContainer"] {
+        overflow: visible !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
+# El componente de chat
 st.components.v1.html("""
-    <div style="pointer-events: auto !important;">
-        <script type="text/javascript">
-            var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-            (function(){
-                var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-                s1.async=true;
-                s1.src='https://embed.tawk.to/695732610a00df198198e359/1jdu9pk10';
-                s1.charset='UTF-8';
-                s1.setAttribute('crossorigin','*');
-                s0.parentNode.insertBefore(s1,s0);
-            })();
-        </script>
-    </div>
-""", height=520)
+    <script type="text/javascript">
+        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+        (function(){
+            var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+            s1.async=true;
+            s1.src='https://embed.tawk.to/695732610a00df198198e359/1jdu9pk10';
+            s1.charset='UTF-8';
+            s1.setAttribute('crossorigin','*');
+            s0.parentNode.insertBefore(s1,s0);
+        })();
+    </script>
+""", height=600)
