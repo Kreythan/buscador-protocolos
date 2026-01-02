@@ -71,3 +71,27 @@ with col3:
 
 # SOLUCIÓN LOGS: Actualización de use_container_width
 st.dataframe(df, width=None) # width=None o width='stretch' según tu versión
+# Lógica de filtrado (mantener igual)
+filtered_df = df.copy()
+if search_query:
+    mask = df.apply(lambda row: row.astype(str).str.contains(search_query, case=False).any(), axis=1)
+    filtered_df = filtered_df[mask]
+
+# TABLA FINAL: Cambiamos width=None por use_container_width=True
+st.markdown('<b style="color: black !important;">Resultados:</b>', unsafe_allow_html=True)
+st.dataframe(filtered_df, use_container_width=True, hide_index=True)
+
+# EL CHAT (mantener al final)
+components.html("""
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/695732610a00df198198e359/1jdu9pk10';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+""", height=0)
