@@ -28,9 +28,10 @@ s0.parentNode.insertBefore(s1,s0);
 """, height=0)
 
 # 4. CSS DINÁMICO SEGÚN EL MODO
+# 4. CSS DINÁMICO MEJORADO (Sin bordes raros en las esquinas)
 bg_color = "#0e1117" if st.session_state.dark_mode else "white"
 text_color = "white" if st.session_state.dark_mode else "black"
-input_bg = "#262730" if st.session_state.dark_mode else "#000000" # Buscador
+input_bg = "#262730" if st.session_state.dark_mode else "#000000"
 filter_bg = "#262730" if st.session_state.dark_mode else "white"
 border_color = "#444" if st.session_state.dark_mode else "#cccccc"
 
@@ -45,7 +46,7 @@ st.markdown(f"""
         color: {text_color} !important;
     }}
 
-    /* TÍTULOS */
+    /* TÍTULOS (LABELS) */
     .stWidgetLabel p, label p {{
         font-size: 24px !important;
         font-weight: bold !important;
@@ -53,35 +54,45 @@ st.markdown(f"""
         -webkit-text-fill-color: {text_color} !important;
     }}
 
-    /* BUSCADOR */
+    /* BUSCADOR REDONDEADO */
     div[data-testid="stTextInput"] > div {{
         background-color: {input_bg} !important;
         border: 1px solid {border_color} !important;
+        border-radius: 15px !important; /* Bordes redondeados */
+        overflow: hidden !important; /* Corta las esquinas del contenedor */
     }}
     div[data-testid="stTextInput"] input {{
         color: white !important;
         font-size: 22px !important;
     }}
 
-    /* FILTROS */
-    div[data-testid="stSelectbox"] [data-baseweb="select"] {{
+    /* FILTROS REDONDEADOS (Solución a las esquinas blancas) */
+    div[data-testid="stSelectbox"] > div {{
+        background-color: transparent !important; /* Evita el fondo del contenedor padre */
+        border-radius: 15px !important;
+    }}
+    
+    div[data-baseweb="select"] {{
         background-color: {filter_bg} !important;
         border: 1px solid {border_color} !important;
+        border-radius: 15px !important; /* Redondeado total */
     }}
+
+    /* Texto dentro del filtro */
     div[data-testid="stSelectbox"] span {{
         color: {text_color} !important;
         font-size: 20px !important;
     }}
 
-    /* TABLA (Para que se vea bien en ambos modos) */
+    /* TABLA Y MARCOS */
     [data-testid="stDataFrame"] {{
         background-color: {bg_color} !important;
+        border-radius: 10px !important;
     }}
 
     [data-testid="InputInstructions"] {{ display: none !important; }}
     </style>
 """, unsafe_allow_html=True)
-
 # 5. CARGA DE DATOS POR GID
 @st.cache_data(ttl=5)
 def load_data_by_gid(gid_number):
