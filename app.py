@@ -20,42 +20,63 @@ s0.parentNode.insertBefore(s1,s0);
 </script>
 """, height=0)
 
-# 3. CSS: ELIMINAR ESCRITURA EN FILTROS Y BORDES INTERNOS
+# 3. CSS: BUSCADOR OSCURO CON LETRAS BLANCAS Y FILTROS BLANCOS LÍMPIOS
 st.markdown("""
     <style>
     .stApp { background-color: white !important; }
     label { font-size: 20px !important; font-weight: bold !important; color: black !important; }
 
-    /* BORDE EXTERIOR ÚNICO NEGRO */
-    [data-testid="stTextInput"] > div, 
-    [data-testid="stSelectbox"] > div {
-        background-color: white !important;
+    /* --- BARRA DE BÚSQUEDA GENERAL --- */
+    [data-testid="stTextInput"] > div {
+        background-color: #262730 !important; /* Fondo oscuro */
         border: 2px solid #000000 !important;
         border-radius: 8px !important;
         box-shadow: none !important;
     }
 
-    /* QUITAR BORDE ROJO/AZUL INTERNO AL ESCRIBIR */
-    [data-testid="stTextInput"] > div > div, 
-    [data-testid="stSelectbox"] > div > div {
-        border: none !important;
-        box-shadow: none !important;
-        outline: none !important;
+    /* Letras blancas al escribir */
+    [data-testid="stTextInput"] input {
+        color: white !important;
+        background-color: transparent !important;
+        caret-color: white !important; /* Cursor blanco */
     }
 
-    /* HACER QUE EL SELECTOR SEA SOLO LISTA (No escritura) */
+    /* Eliminar el cuadro blanco/flecha a la derecha del buscador */
+    [data-testid="stTextInput"] button, 
+    [data-testid="stTextInput"] ul {
+        display: none !important;
+    }
+
+    /* --- FILTROS (SELECTBOX) --- */
+    [data-testid="stSelectbox"] > div {
+        background-color: white !important;
+        border: 2px solid #000000 !important;
+        border-radius: 8px !important;
+    }
+
+    /* Hacer que el selector sea solo lista (No escritura) */
     div[data-baseweb="select"] input {
         caret-color: transparent !important;
         cursor: pointer !important;
     }
 
-    /* TEXTO NEGRO */
-    input, div[data-baseweb="select"] span {
+    /* Texto negro en filtros */
+    div[data-baseweb="select"] span {
         color: black !important;
         font-size: 18px !important;
     }
+
+    /* --- LIMPIEZA GENERAL --- */
+    /* Quitar bordes internos rojos/azules y sombras al hacer click */
+    [data-testid="stTextInput"] > div > div, 
+    [data-testid="stSelectbox"] > div > div,
+    [data-testid="stTextInput"] > div:focus-within {
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
     
-    /* ELIMINAR COLOR PLOMO AL HACER CLIC */
+    /* Forzar fondo blanco en filtros incluso al clickear */
     div[data-baseweb="select"] > div {
         background-color: white !important;
     }
@@ -65,16 +86,15 @@ st.markdown("""
 # 4. CARGA DE DATOS
 @st.cache_data(ttl=10)
 def load_data():
-    # IMPORTANTE: Reemplaza las comillas de abajo por tu link de Google Sheets
+    # REEMPLAZA ESTO CON TU ENLACE CSV DE GOOGLE SHEETS
     url = "TU_LINK_DE_GOOGLE_SHEETS_AQUI" 
     try:
         return pd.read_csv(url)
     except:
-        # Datos de prueba corregidos (todos tienen la misma cantidad de elementos)
         return pd.DataFrame({
-            'Hecho': ['Esperando Link', 'Configura el CSV'],
-            'Realizado': ['NO', 'NO'],
-            'Lo Tiene': ['NO', 'NO']
+            'Hecho': ['Dato A', 'Dato B'],
+            'Realizado': ['SI', 'NO'],
+            'Lo Tiene': ['SI', 'NO']
         })
 
 df = load_data()
@@ -82,10 +102,12 @@ df = load_data()
 # 5. INTERFAZ
 st.markdown("<h1 style='text-align: center; color: black;'>Sistema de Búsqueda</h1>", unsafe_allow_html=True)
 
+# Buscador General (Configurado para solo escritura en el CSS)
 search_query = st.text_input("Buscador General", placeholder="Escriba aquí para buscar...")
 
 st.markdown("<br>", unsafe_allow_html=True)
 
+# Filtros
 col1, col2, col3 = st.columns(3)
 with col1:
     f_hecho = st.selectbox("Filtrar por Hecho", ["Todos"] + sorted(list(df['Hecho'].dropna().unique())))
@@ -105,4 +127,5 @@ if f_realizado != "Todos":
 if f_lo_tiene != "Todos":
     df_final = df_final[df_final['Lo Tiene'] == f_lo_tiene]
 
+st.markdown(f"**Registros encontrados: {len(df_final)}**")
 st.dataframe(df_final, use_container_width=True)
