@@ -25,7 +25,7 @@ st.markdown("""
     <style>
     .stApp { background-color: white !important; }
     label { font-size: 18px !important; font-weight: bold !important; color: black !important; }
-    [data-testid="stTextInput"] > div { background-color: #262730 !important; border-radius: 8px !important; border: 2px solid black !important; }
+    [data-testid="stTextInput"] > div { background-color: #000000 !important; border-radius: 8px !important; border: 2px solid black !important; }
     [data-testid="stTextInput"] input { color: white !important; -webkit-text-fill-color: white !important; }
     [data-testid="stSelectbox"] > div { background-color: white !important; border: 2px solid black !important; border-radius: 8px !important; }
     [data-testid="stSelectbox"] div[data-baseweb="select"] span { color: black !important; }
