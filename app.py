@@ -60,6 +60,10 @@ st.markdown("""
 
     /* TEXTO NEGRO EN TODO */
     input, div[data-baseweb="select"] span {
+    background-color: white !important;
+        color: black !important;
+        border: none !important;
+        box-shadow: none !important;
         color: black !important;
         font-size: 18px !important;
     }
