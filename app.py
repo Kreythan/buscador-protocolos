@@ -20,13 +20,13 @@ s0.parentNode.insertBefore(s1,s0);
 </script>
 """, height=0)
 
-# 3. CSS: DIFERENCIACIÓN DE COLORES (BUSCADOR BLANCO / FILTROS NEGRO)
+# 3. CSS ACTUALIZADO
 st.markdown("""
     <style>
     .stApp { background-color: white !important; }
     label { font-size: 20px !important; font-weight: bold !important; color: black !important; }
 
-    /* --- BARRA DE BÚSQUEDA GENERAL (TEXTO BLANCO) --- */
+    /* --- BARRA DE BÚSQUEDA GENERAL --- */
     [data-testid="stTextInput"] > div, 
     [data-testid="stTextInput"] > div:focus-within {
         background-color: #262730 !important; 
@@ -35,7 +35,6 @@ st.markdown("""
         box-shadow: none !important;
     }
 
-    /* Forzar letras blancas SOLO en el input de texto */
     [data-testid="stTextInput"] input {
         color: white !important;
         -webkit-text-fill-color: white !important;
@@ -47,27 +46,35 @@ st.markdown("""
         display: none !important;
     }
 
-    /* --- FILTROS SELECTBOX (TEXTO NEGRO SIEMPRE) --- */
+    /* --- FILTROS SELECTBOX --- */
     [data-testid="stSelectbox"] > div {
         background-color: white !important;
         border: 2px solid #000000 !important;
         border-radius: 8px !important;
     }
 
-    /* Forzar texto negro en el valor seleccionado y en la lista */
     [data-testid="stSelectbox"] div[data-baseweb="select"] span,
     [data-testid="stSelectbox"] div[data-baseweb="select"] div {
         color: black !important;
         -webkit-text-fill-color: black !important;
     }
 
-    /* Quitar cursor de escritura en filtros */
-    [data-testid="stSelectbox"] input {
-        caret-color: transparent !important;
-        cursor: pointer !important;
+    /* --- BOTÓN DE LIMPIEZA PERSONALIZADO --- */
+    div.stButton > button {
+        background-color: #f0f2f6;
+        color: black;
+        border: 1px solid #000000;
+        border-radius: 5px;
+        font-weight: bold;
+        padding: 5px 20px;
+    }
+    div.stButton > button:hover {
+        background-color: #ff4b4b;
+        color: white;
+        border: 1px solid #ff4b4b;
     }
 
-    /* --- LIMPIEZA DE INTERFACES --- */
+    /* Limpieza de interfaces */
     [data-testid="stTextInput"] > div > div, 
     [data-testid="stSelectbox"] > div > div {
         border: none !important;
@@ -75,14 +82,20 @@ st.markdown("""
         background-color: transparent !important;
     }
 
-    /* Fondo blanco para la lista desplegable de los filtros */
     div[data-baseweb="select"] > div {
         background-color: white !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# 4. CARGA DE DATOS
+# 4. FUNCIONES Y CARGA DE DATOS
+def clear_fields():
+    """Función para resetear todos los valores en el session_state"""
+    st.session_state["search_key"] = ""
+    st.session_state["f1_key"] = "Todos"
+    st.session_state["f2_key"] = "Todos"
+    st.session_state["f3_key"] = "Todos"
+
 @st.cache_data(ttl=10)
 def load_data():
     url = "TU_LINK_DE_GOOGLE_SHEETS_AQUI" 
@@ -100,17 +113,24 @@ df = load_data()
 # 5. INTERFAZ
 st.markdown("<h1 style='text-align: center; color: black;'>Sistema de Búsqueda</h1>", unsafe_allow_html=True)
 
-search_query = st.text_input("Buscador General", placeholder="Escriba aquí para buscar...")
+# Buscador con KEY para permitir el reset
+search_query = st.text_input("Buscador General", placeholder="Escriba aquí para buscar...", key="search_key")
+
+# Botón abajo a la izquierda de la barra
+col_btn, _ = st.columns([1, 5])
+with col_btn:
+    st.button("🧹 Limpiar Campos", on_click=clear_fields)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
+# Filtros con KEY para permitir el reset
 col1, col2, col3 = st.columns(3)
 with col1:
-    f_hecho = st.selectbox("Filtrar por Hecho", ["Todos"] + sorted(list(df['Hecho'].dropna().unique())))
+    f_hecho = st.selectbox("Filtrar por Hecho", ["Todos"] + sorted(list(df['Hecho'].dropna().unique())), key="f1_key")
 with col2:
-    f_realizado = st.selectbox("Filtrar por Realizado", ["Todos"] + sorted(list(df['Realizado'].dropna().unique())))
+    f_realizado = st.selectbox("Filtrar por Realizado", ["Todos"] + sorted(list(df['Realizado'].dropna().unique())), key="f2_key")
 with col3:
-    f_lo_tiene = st.selectbox("Filtrar por Lo Tiene", ["Todos"] + sorted(list(df['Lo Tiene'].dropna().unique())))
+    f_lo_tiene = st.selectbox("Filtrar por Lo Tiene", ["Todos"] + sorted(list(df['Lo Tiene'].dropna().unique())), key="f3_key")
 
 # 6. FILTRADO Y TABLA
 df_final = df.copy()
