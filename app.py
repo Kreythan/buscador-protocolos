@@ -5,21 +5,22 @@ import streamlit.components.v1 as components
 # 1. CONFIGURACIÓN
 st.set_page_config(page_title="Búsqueda Protocolos", layout="wide")
 
-# 2. CHAT TAWK.TO
-components.html("""
-<script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/695732610a00df198198e359/1jdu9pk10';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
-</script>
-""", height=0)
-
+# 2. CHAT TAWK.TO (Versión optimizada)
+# Colocamos el script en un contenedor con altura para que el navegador no lo ignore
+with st.container():
+    components.html("""
+    <script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/695732610a00df198198e359/1jdu9pk10';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+    })();
+    </script>
+    """, height=1) # Altura mínima de 1px para activar el renderizado
 # 3. CSS ACTUALIZADO
 st.markdown("""
     <style>
