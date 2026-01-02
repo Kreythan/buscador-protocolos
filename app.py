@@ -28,7 +28,7 @@ st.markdown("""
     
     /* ESTILO DE LAS PESTAÑAS (TABS) */
     button[data-baseweb="tab"] {
-        font-size: 24px !important; 
+        font-size: 30px !important; 
         font-weight: bold !important;
         color: #000000 !important;
     }
@@ -121,7 +121,7 @@ for i, tab in enumerate(tabs):
         search_query = st.text_input(f"Buscar en {nombre_pestana}", placeholder="Escriba aquí...", key=f"search_{nombre_pestana}")
 
         # Botón Limpiar
-        st.button("🧹 Limpiar Campos", key=f"btn_{nombre_pestana}", on_click=reset_tab_fields, args=(nombre_pestana,))
+        st.button("Limpiar Campos", key=f"btn_{nombre_pestana}", on_click=reset_tab_fields, args=(nombre_pestana,))
 
         st.markdown("<br>", unsafe_allow_html=True)
 
