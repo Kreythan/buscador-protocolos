@@ -164,38 +164,41 @@ for i, tab in enumerate(tabs):
 # --- CHAT TOTALMENTE FIJO (STICKY) ---
 # --- BURBUJA DE CHAT FLOTANTE Y FIJA ---
 # --- SOLUCIÓN DEFINITIVA: POP-UP FLOTANTE GLOBAL ---
+# --- LA ÚLTIMA SOLUCIÓN: FORZADO DE CAPA FLOTANTE ---
 st.markdown("""
     <style>
-    /* 1. Forzar al contenedor del chat a salirse de la estructura de Streamlit */
-    [data-testid="stVerticalBlock"] > div:last-child {
+    /* 1. Obligamos a que el contenedor del componente sea invisible y flote */
+    [data-testid="stHorizontalBlock"] > div, 
+    [data-testid="stVerticalBlock"] > div {
         position: static !important;
     }
 
-    /* 2. El iframe del chat ahora se posiciona respecto a la ventana del navegador */
+    /* 2. Posicionamiento absoluto respecto a la VENTANA (no a la app) */
+    div.element-container:has(iframe[title="streamlit.components.v1.html"]) {
+        position: fixed !important;
+        bottom: 20px !important;
+        right: 20px !important;
+        z-index: 999999 !important;
+        width: 100px !important;
+        height: 100px !important;
+    }
+
+    /* 3. El iframe interno */
     iframe[title="streamlit.components.v1.html"] {
         position: fixed !important;
         bottom: 20px !important;
         right: 20px !important;
-        z-index: 1000000 !important; /* Capa máxima */
-        width: 100px !important;
-        height: 100px !important;
-        border: none !important;
+        z-index: 1000000 !important;
     }
-
-    /* 3. Permitir que el área se agrande cuando el usuario abre el chat */
-    iframe[title="streamlit.components.v1.html"]:hover {
-        width: 400px !important;
-        height: 600px !important;
-    }
-
-    /* 4. IMPORTANTE: Esto evita que el contenedor padre lo oculte al hacer scroll */
-    [data-testid="stAppViewContainer"] {
-        overflow: visible !important;
+    
+    /* 4. Fix para que no se corte al hacer scroll */
+    .main .block-container {
+        position: static !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# El componente de chat
+# Inyectamos el chat
 st.components.v1.html("""
     <script type="text/javascript">
         var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
@@ -208,4 +211,4 @@ st.components.v1.html("""
             s0.parentNode.insertBefore(s1,s0);
         })();
     </script>
-""", height=600)
+""", height=520)
