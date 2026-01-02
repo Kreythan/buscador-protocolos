@@ -11,12 +11,13 @@ def chat_flotante():
         <script type="text/javascript">
         var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
         
-        // ESTA PARTE MUEVE EL CHAT A LA IZQUIERDA
+        // Mover a la izquierda
         Tawk_API.customStyle = {
             visibility : {
-                desktop : { xOffset : 15, yOffset : 15 },
-                mobile : { xOffset : 15, yOffset : 15 }
-            }
+                desktop : { xOffset : 20, yOffset : 20 },
+                mobile : { xOffset : 10, yOffset : 10 }
+            },
+            placement : 'bottom-left'
         };
 
         (function(){
@@ -28,48 +29,73 @@ def chat_flotante():
         s0.parentNode.insertBefore(s1,s0);
         })();
         </script>
-    """, height=0)
+    """, height=100)
 
 chat_flotante()
 
-# 3. CSS ULTRA-AGRESIVO PARA FORZAR TEXTO NEGRO
+# 3. CSS PARA BLOQUEAR EL MODO OSCURO DEL NAVEGADOR
 st.markdown("""
     <style>
-    /* 1. Forzar fondo blanco en todo */
-    [data-testid="stAppViewContainer"], .stApp, .main {
-        background-color: white !important;
+    /* Bloqueo total de inversión de colores */
+    html, body, [data-testid="stAppViewContainer"] {
+        background-color: #FFFFFF !important;
+        filter: none !important;
+        color-scheme: light !important;
     }
-
-    /* 2. Forzar NEGRO en todos los textos, títulos y párrafos */
-    * {
-        color: #000000 !important;
-        -webkit-text-fill-color: #000000 !important;
-    }
-
-    /* 3. Estilo de los nombres de los filtros */
-    .filter-label {
-        color: #000000 !important;
-        font-weight: bold !important;
-        font-size: 16px !important;
-        display: block;
-        margin-bottom: 8px;
-    }
-
-    /* 4. Forzar visibilidad de inputs y selectores */
-    input, div[data-baseweb="select"] {
-        background-color: #f0f2f6 !important;
-        border: 2px solid #000000 !important;
-        border-radius: 8px !important;
-    }
-
-    /* 5. Asegurar que el texto dentro de los filtros sea negro */
-    div[data-baseweb="select"] span, div[data-baseweb="select"] div {
-        color: #000000 !important;
-    }
-
-    /* 6. Forzar que la tabla no sea transparente */
-    [data-testid="stDataFrame"] {
-        background-color: white !important;
-    }
+    /* Forzar que todos los textos sean negros */
+    * { color: #000000 !important; }
     
-    /* 7. Bloquear cualquier filtro de inversión de color del
+    /* Estilo para los cuadros de búsqueda y filtros */
+    input, div[data-baseweb="select"] {
+        border: 2px solid #000000 !important;
+        background-color: #FFFFFF !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+# 4. CARGA DE DATOS
+@st.cache_data(ttl=30)
+def load_data():
+    # REEMPLAZA ESTE LINK CON TU CSV DE GOOGLE SHEETS
+    url = "TU_LINK_DE_GOOGLE_SHEETS_AQUI" 
+    try:
+        return pd.read_csv(url)
+    except:
+        # Fila de prueba con HTML forzado para ver si el negro funciona
+        return pd.DataFrame({'N°': ['1'], 'Hecho': ['Dato de Prueba'], 'Realizado': ['SI'], 'Lo Tiene': ['SI'], 'Protocolo': ['A']})
+
+df = load_data()
+
+# --- INTERFAZ CON HTML FORZADO (NEGRO) ---
+
+st.markdown('<h1 style="color: black !important; font-family: sans-serif;">Sistema de Búsqueda y Filtros</h1>', unsafe_allow_html=True)
+
+st.markdown('<b style="color: black !important;">Buscador General</b>', unsafe_allow_html=True)
+search_query = st.text_input("Buscador", placeholder="Escriba aquí...", label_visibility="collapsed")
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+c1, c2, c3 = st.columns(3)
+with c1:
+    st.markdown('<b style="color: black !important;">Filtrar por Hecho</b>', unsafe_allow_html=True)
+    f_hecho = st.selectbox("H", ["Todos"] + sorted(list(df['Hecho'].unique())), key="h", label_visibility="collapsed")
+with c2:
+    st.markdown('<b style="color: black !important;">Filtrar por Realizado</b>', unsafe_allow_html=True)
+    f_realizado = st.selectbox("R", ["Todos"] + sorted(list(df['Realizado'].unique())), key="r", label_visibility="collapsed")
+with c3:
+    st.markdown('<b style="color: black !important;">Filtrar por Lo Tiene</b>', unsafe_allow_html=True)
+    f_lo_tiene = st.selectbox("L", ["Todos"] + sorted(list(df['Lo Tiene'].unique())), key="l", label_visibility="collapsed")
+
+st.markdown("<br>", unsafe_allow_html=True)
+st.markdown('<b style="color: black !important;">Filtrar por Protocolo</b>', unsafe_allow_html=True)
+f_protocolo = st.selectbox("P", ["Todos"] + sorted(list(df['Protocolo'].unique())), key="p", label_visibility="collapsed")
+
+# Filtrado
+filtered_df = df.copy()
+if search_query:
+    mask = df.apply(lambda row: row.astype(str).str.contains(search_query, case=False).any(), axis=1)
+    filtered_df = filtered_df[mask]
+
+# Tabla final
+st.markdown(f'<p style="color: black !important; font-weight: bold;">Registros encontrados: {len(filtered_df)}</p>', unsafe_allow_html=True)
+st.dataframe(filtered_df, use_container_width=True, hide_index=True)
