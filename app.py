@@ -18,17 +18,15 @@ s1.setAttribute('crossorigin','*');
 s0.parentNode.insertBefore(s1,s0);
 })();
 </script>
-""", height=10)
+""", height=0)
 
-# 3. CSS: LIMPIEZA TOTAL Y BUSCADOR BLANCO
+# 3. CSS: ELIMINAR ESCRITURA EN FILTROS Y BORDES INTERNOS
 st.markdown("""
     <style>
-    /* Fondo general de la app */
     .stApp { background-color: white !important; }
-    
     label { font-size: 20px !important; font-weight: bold !important; color: black !important; }
 
-    /* BORDE NEGRO ÚNICO Y FONDO BLANCO PARA TODOS LOS CUADROS */
+    /* BORDE EXTERIOR ÚNICO NEGRO */
     [data-testid="stTextInput"] > div, 
     [data-testid="stSelectbox"] > div {
         background-color: white !important;
@@ -37,19 +35,12 @@ st.markdown("""
         box-shadow: none !important;
     }
 
-    /* ELIMINAR EL COLOR PLOMO INTERNO DEL BUSCADOR */
-    [data-testid="stTextInput"] input {
-        background-color: white !important;
-        color: black !important;
+    /* QUITAR BORDE ROJO/AZUL INTERNO AL ESCRIBIR */
+    [data-testid="stTextInput"] > div > div, 
+    [data-testid="stSelectbox"] > div > div {
         border: none !important;
         box-shadow: none !important;
-    }
-
-    /* QUITAR EL FONDO GRIS CUANDO SE HACE CLIC (FOCUS) */
-    [data-testid="stTextInput"] > div:focus-within {
-        background-color: black !important;
-        border-color: #000000 !important;
-        box-shadow: none !important;
+        outline: none !important;
     }
 
     /* HACER QUE EL SELECTOR SEA SOLO LISTA (No escritura) */
@@ -58,18 +49,15 @@ st.markdown("""
         cursor: pointer !important;
     }
 
-    /* TEXTO NEGRO EN TODO */
+    /* TEXTO NEGRO */
     input, div[data-baseweb="select"] span {
         color: black !important;
         font-size: 18px !important;
     }
-
-    /* ELIMINAR CUALQUIER SOMBRA O BORDE ROJO DE ERROR */
-    [data-testid="stTextInput"] > div > div, 
-    [data-testid="stSelectbox"] > div > div {
-        border: none !important;
-        box-shadow: none !important;
-        outline: none !important;
+    
+    /* ELIMINAR COLOR PLOMO AL HACER CLIC */
+    div[data-baseweb="select"] > div {
+        background-color: white !important;
     }
     </style>
 """, unsafe_allow_html=True)
