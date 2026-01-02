@@ -20,30 +20,47 @@ def toggle_theme():
 # --- CHAT FLOTANTE POSICIONADO ABAJO A LA DERECHA ---
 st.markdown("""
     <style>
-    /* Buscamos el contenedor del componente y lo fijamos */
+    #Buscamos elcontenedor del componente y lo fijamos
+    
+   # --- CONFIGURACIÓN FINAL DEL CHAT FLOTANTE ---
+st.markdown("""
+    <style>
+    /* 1. Localizamos el iframe del chat y lo sacamos del flujo normal */
     iframe[title="streamlit.components.v1.html"] {
         position: fixed !important;
-        bottom: 0px !important;
-        right: 0px !important;
+        bottom: 20px !important;
+        right: 20px !important;
+        width: 350px !important; /* Ancho suficiente para la ventana abierta */
+        height: 520px !important; /* Alto suficiente para la ventana abierta */
         z-index: 999999 !important;
         border: none !important;
+        background: transparent !important;
+    }
+
+    /* 2. Ajuste para que el contenedor no bloquee clics en la tabla */
+    /* Esto hace que el área del iframe sea 'invisible' al mouse excepto donde está el chat */
+    iframe[title="streamlit.components.v1.html"] {
+        pointer-events: none !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
+# El componente debe tener el script de Tawk.to y un pequeño truco de CSS interno
 components.html("""
-    <script type="text/javascript">
-        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-        (function(){
-            var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-            s1.async=true;
-            s1.src='https://embed.tawk.to/695732610a00df198198e359/1jdu9pk10';
-            s1.charset='UTF-8';
-            s1.setAttribute('crossorigin','*');
-            s0.parentNode.insertBefore(s1,s0);
-        })();
-    </script>
-""", height=600)
+    <div style="pointer-events: auto !important;">
+        <script type="text/javascript">
+            var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+            (function(){
+                var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+                s1.async=true;
+                s1.src='https://embed.tawk.to/695732610a00df198198e359/1jdu9pk10';
+                s1.charset='UTF-8';
+                s1.setAttribute('crossorigin','*');
+                s0.parentNode.insertBefore(s1,s0);
+            })();
+        </script>
+    </div>
+""", height=520)
 
 
 # 4. CSS DINÁMICO SEGÚN EL MODO
