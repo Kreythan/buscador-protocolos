@@ -20,32 +20,32 @@ s0.parentNode.insertBefore(s1,s0);
 </script>
 """, height=0)
 
-# 3. CSS: BUSCADOR OSCURO, LETRAS BLANCAS Y ELIMINACIÓN DE "PRESS ENTER"
+# 3. CSS: BLOQUEO DE COLOR OSCURO EN BUSCADOR
 st.markdown("""
     <style>
     .stApp { background-color: white !important; }
     label { font-size: 20px !important; font-weight: bold !important; color: black !important; }
 
-    /* --- BARRA DE BÚSQUEDA GENERAL --- */
-    [data-testid="stTextInput"] > div {
-        background-color: #262730 !important; /* Fondo oscuro */
+    /* --- BARRA DE BÚSQUEDA GENERAL (FORZAR OSCURO SIEMPRE) --- */
+    /* Este bloque asegura que el contenedor no se vuelva blanco al escribir */
+    [data-testid="stTextInput"] > div, 
+    [data-testid="stTextInput"] > div:focus-within,
+    [data-testid="stTextInput"] > div[data-baseweb="input"] {
+        background-color: #262730 !important; 
         border: 2px solid #000000 !important;
         border-radius: 8px !important;
         box-shadow: none !important;
     }
 
-    /* Letras blancas al escribir */
+    /* Forzar letras blancas y fondo transparente del input interno */
     [data-testid="stTextInput"] input {
         color: white !important;
         background-color: transparent !important;
-        caret-color: white !important;
+        -webkit-text-fill-color: white !important; /* Para navegadores basados en Safari/Chrome */
     }
 
-    /* ELIMINAR EL CUADRITO "PRESS ENTER TO APPLY" Y OTROS ELEMENTOS LATERALES */
-    [data-testid="stTextInput"] [data-testid="InputInstructions"] {
-        display: none !important;
-    }
-    
+    /* Eliminar el cuadrito "Press Enter" y botones */
+    [data-testid="stTextInput"] [data-testid="InputInstructions"],
     [data-testid="stTextInput"] button {
         display: none !important;
     }
@@ -57,7 +57,6 @@ st.markdown("""
         border-radius: 8px !important;
     }
 
-    /* Solo lista (No escritura) */
     div[data-baseweb="select"] input {
         caret-color: transparent !important;
         cursor: pointer !important;
@@ -68,13 +67,11 @@ st.markdown("""
         font-size: 18px !important;
     }
 
-    /* --- LIMPIEZA GENERAL --- */
+    /* Limpieza de bordes internos */
     [data-testid="stTextInput"] > div > div, 
-    [data-testid="stSelectbox"] > div > div,
-    [data-testid="stTextInput"] > div:focus-within {
+    [data-testid="stSelectbox"] > div > div {
         border: none !important;
         box-shadow: none !important;
-        outline: none !important;
         background-color: transparent !important;
     }
     
@@ -87,7 +84,6 @@ st.markdown("""
 # 4. CARGA DE DATOS
 @st.cache_data(ttl=10)
 def load_data():
-    # REEMPLAZA ESTO CON TU ENLACE CSV DE GOOGLE SHEETS
     url = "TU_LINK_DE_GOOGLE_SHEETS_AQUI" 
     try:
         return pd.read_csv(url)
