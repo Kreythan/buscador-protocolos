@@ -69,7 +69,7 @@ st.markdown(f"""
     /* FILTROS REDONDEADOS (Solución a las esquinas blancas) */
     div[data-testid="stSelectbox"] > div {{
         background-color: transparent !important; /* Evita el fondo del contenedor padre */
-        border-radius: 15px !important;
+        border-radius: 10px !important;
     }}
     
     div[data-baseweb="select"] {{
@@ -140,7 +140,7 @@ for i, tab in enumerate(tabs):
         df = load_data_by_gid(gid_actual)
         
         search_query = st.text_input(f"Buscar en {nombre_pestana}", placeholder="Escriba aquí...", key=f"search_{nombre_pestana}")
-        st.button("🧹 Limpiar Campos", key=f"btn_{nombre_pestana}", on_click=reset_tab_fields, args=(nombre_pestana,))
+        st.button("Limpiar Campos", key=f"btn_{nombre_pestana}", on_click=reset_tab_fields, args=(nombre_pestana,))
 
         col1, col2, col3 = st.columns(3)
         
