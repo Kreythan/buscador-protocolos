@@ -194,3 +194,19 @@ for i, tab in enumerate(tabs):
 # --- LA ÚLTIMA SOLUCIÓN: FORZADO DE CAPA FLOTANTE ---
 # --- POP-UP FLOTANTE ABSOLUTO (FUERA DE ESTRUCTURA) ---
 
+import streamlit.components.v1 as components
+
+# Inyección directa en el body de la página
+components.html("""
+    <script type="text/javascript">
+        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+        (function(){
+            var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+            s1.async=true;
+            s1.src='https://embed.tawk.to/695732610a00df198198e359/1jdu9pk10';
+            s1.charset='UTF-8';
+            s1.setAttribute('crossorigin','*');
+            s0.parentNode.insertBefore(s1,s0);
+        })();
+    </script>
+""", height=0, width=0) # Altura 0 para que no cree un hueco debajo de la tabla
