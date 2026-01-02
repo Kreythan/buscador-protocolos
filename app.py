@@ -25,27 +25,30 @@ s0.parentNode.insertBefore(s1,s0);
 # 3. CSS: CORRECCIÓN DE COLORES Y TAMAÑOS GRANDES
 # 3. CSS: FORZADO DE COLOR NEGRO EN ETIQUETAS DE FILTROS
 # 3. CSS: SEPARACIÓN DEFINITIVA DE COLORES Y TAMAÑOS
+# 3. CSS: BLOQUEO TOTAL DE COLOR Y SEPARACIÓN DE ESTILOS
 st.markdown("""
     <style>
-    /* 1. FONDO GENERAL */
+    /* 1. FONDO DE APP */
     .stApp { background-color: white !important; }
 
-    /* 2. PESTAÑAS (TABS) - GRANDES Y NEGRAS */
+    /* 2. PESTAÑAS - NEGRO PURO Y GRANDES */
     button[data-baseweb="tab"] p {
         font-size: 35px !important; 
         font-weight: bold !important;
         color: black !important;
+        -webkit-text-fill-color: black !important;
     }
 
-    /* 3. TÍTULOS (LABELS) - FORZAR NEGRO EN TODO */
-    .stWidgetLabel p {
+    /* 3. TÍTULOS DE FILTROS Y BUSCADOR (LABELS) */
+    /* Forzamos negro para evitar que Streamlit los vuelva blancos */
+    .stWidgetLabel p, label p {
         font-size: 28px !important;
         font-weight: bold !important;
         color: black !important;
         -webkit-text-fill-color: black !important;
     }
 
-    /* 4. BUSCADOR (TEXT INPUT) - FONDO NEGRO */
+    /* 4. BUSCADOR (TEXTO EN CAJA NEGRA) */
     div[data-testid="stTextInput"] > div {
         background-color: black !important;
         border: 1px solid #333333 !important;
@@ -57,21 +60,16 @@ st.markdown("""
         -webkit-text-fill-color: white !important;
     }
 
-    /* 5. FILTROS (SELECTBOX) - FORZAR FONDO BLANCO */
-    div[data-testid="stSelectbox"] > div[data-baseweb="select"] {
+    /* 5. FILTROS (TEXTO EN CAJA BLANCA) */
+    div[data-testid="stSelectbox"] [data-baseweb="select"] {
         background-color: white !important;
         border: 1px solid #cccccc !important;
         border-radius: 8px !important;
-        color: black !important;
     }
     
-    /* Fondo del contenedor interno del filtro */
-    div[data-baseweb="select"] > div {
-        background-color: white !important;
-    }
-
-    /* Texto dentro del filtro (opción seleccionada) */
-    div[data-testid="stSelectbox"] span {
+    /* Forzar texto seleccionado en negro */
+    div[data-testid="stSelectbox"] span, 
+    div[data-testid="stSelectbox"] div[role="button"] {
         font-size: 22px !important;
         color: black !important;
         -webkit-text-fill-color: black !important;
@@ -85,13 +83,14 @@ st.markdown("""
         border: 1px solid #cccccc !important;
     }
 
-    /* 7. TEXTO DE REGISTROS */
+    /* 7. TEXTO DE REGISTROS (LÍNEA 121) */
     .stMarkdown p {
         font-size: 24px !important;
         color: black !important;
+        -webkit-text-fill-color: black !important;
     }
 
-    /* Eliminar avisos de Streamlit */
+    /* Ocultar avisos de Streamlit */
     [data-testid="InputInstructions"] { display: none !important; }
     </style>
 """, unsafe_allow_html=True)
