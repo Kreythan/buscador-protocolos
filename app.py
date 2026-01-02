@@ -12,24 +12,25 @@ if "dark_mode" not in st.session_state:
 def toggle_theme():
     st.session_state.dark_mode = not st.session_state.dark_mode
 
-# 3. CHAT TAWK.TO
-# 2. CHAT TAWK.TO (Versión corregida)
+
+# 3. CHAT TAWK.TO (Versión corregida)
 # --- FORZADO DE VISIBILIDAD DEL CHAT ---
-st.components.v1.html(f"""
-    <div id="wrapper-chat" style="position: fixed; bottom: 20px; right: 20px; z-index: 999999;">
-        <script type="text/javascript">
-            var Tawk_API=Tawk_API||{{}}, Tawk_LoadStart=new Date();
-            (function(){{
-                var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-                s1.async=true;
-                s1.src='https://embed.tawk.to/695732610a00df198198e359/1jdu9pk10';
-                s1.charset='UTF-8';
-                s1.setAttribute('crossorigin','*');
-                s0.parentNode.insertBefore(s1,s0);
-            }})();
-        </script>
-    </div>
-""", height=80, width=80)
+# --- FORZADO DE VENTANA DE CHAT COMPLETA ---
+components.html(f"""
+    <script type="text/javascript">
+        var Tawk_API=Tawk_API||{{}}, Tawk_LoadStart=new Date();
+        (function(){{
+            var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+            s1.async=true;
+            s1.src='https://embed.tawk.to/695732610a00df198198e359/1jdu9pk10';
+            s1.charset='UTF-8';
+            s1.setAttribute('crossorigin','*');
+            s0.parentNode.insertBefore(s1,s0);
+        }})();
+    </script>
+""", height=500) # Aumentamos la altura a 500 para que la ventana quepa al abrirse
+
+
 # 4. CSS DINÁMICO SEGÚN EL MODO
 # 4. CSS DINÁMICO MEJORADO (Sin bordes raros en las esquinas)
 bg_color = "#0e1117" if st.session_state.dark_mode else "white"
