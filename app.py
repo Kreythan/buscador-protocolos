@@ -24,50 +24,39 @@ s0.parentNode.insertBefore(s1,s0);
 st.markdown("""
     <style>
     .stApp { background-color: white !important; }
-    label { font-size: 20px !important; font-weight: bold !important; color: black !important; }
     
-    /* ESTILO DE LAS PESTAÑAS (TABS) */
+    /* PESTAÑAS MUY GRANDES */
     button[data-baseweb="tab"] {
-        font-size: 30px !important; 
+        font-size: 35px !important; 
         font-weight: bold !important;
         color: #000000 !important;
     }
-    button[data-baseweb="tab"][aria-selected="true"] {
-        border-bottom-color: #000000 !important;
-        color: #000000 !important;
-    }
 
-    /* BUSCADOR NEGRO */
+    /* BUSCADOR: Título y Caja de texto */
+    [data-testid="stTextInput"] label {
+        font-size: 25px !important; /* Tamaño del título */
+    }
+    
     [data-testid="stTextInput"] > div { 
         background-color: #000000 !important; 
         border-radius: 8px !important; 
-        border: 1px solid #333333 !important; 
     }
+    
     [data-testid="stTextInput"] input { 
+        font-size: 22px !important; /* Tamaño de lo que escribes */
         color: white !important; 
         -webkit-text-fill-color: white !important; 
     }
 
-    /* FILTROS BLANCOS CON BORDES FINOS */
-    [data-testid="stSelectbox"] > div { 
-        background-color: white !important; 
-        border: 1px solid #cccccc !important; 
-        border-radius: 6px !important; 
+    /* FILTROS: Tamaño de letra */
+    [data-testid="stSelectbox"] label {
+        font-size: 22px !important;
     }
     
-    /* FORZAR LETRAS NEGRAS EN SELECCIÓN */
-    div[data-baseweb="select"] span, div[data-baseweb="select"] div {
+    div[data-baseweb="select"] span {
+        font-size: 20px !important; /* Tamaño del texto seleccionado */
         color: black !important;
-        -webkit-text-fill-color: black !important;
     }
-    
-    div[data-baseweb="select"] > div { background-color: white !important; }
-
-    /* Botón Limpiar */
-    div.stButton > button { 
-        background-color: #f8f9fa; color: black; border: 1px solid #cccccc; font-weight: bold; border-radius: 5px;
-    }
-    div.stButton > button:hover { background-color: #ff4b4b; color: white; border: 1px solid #ff4b4b; }
 
     [data-testid="InputInstructions"] { display: none !important; }
     </style>
