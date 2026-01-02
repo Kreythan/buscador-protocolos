@@ -7,7 +7,7 @@ st.set_page_config(page_title="Búsqueda Protocolos", layout="wide")
 
 # 2. ESCUDO ANTI-MODO OSCURO (CSS directo al HTML)
 # Esto obliga al navegador a no invertir colores
-st.markdown("""
+st.markdown("
     <style>
     :root { color-scheme: light !important; }
     html, body, [data-testid="stAppViewContainer"] {
@@ -24,7 +24,7 @@ st.markdown("""
         border: 2px solid black !important;
     }
     </style>
-""", unsafe_allow_html=True)
+", unsafe_allow_html=True)
 
 # 3. CARGA DE DATOS
 @st.cache_data(ttl=20)
@@ -63,7 +63,7 @@ st.dataframe(df, use_container_width=True, hide_index=True)
 
 # 5. CONTENEDOR ESPECIAL PARA EL CHAT (Al final para evitar errores)
 # Usamos un truco para que el script no se rompa por las comillas
-tawk_script = ""
+tawk_script = "
 var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
 Tawk_API.customStyle = {
     visibility : {
@@ -79,7 +79,7 @@ s1.charset='UTF-8';
 s1.setAttribute('crossorigin','*');
 s0.parentNode.insertBefore(s1,s0);
 })();
-""
+"
 
 # Inyectamos el componente en un contenedor pequeño
 with st.container():
