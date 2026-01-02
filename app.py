@@ -23,29 +23,36 @@ s0.parentNode.insertBefore(s1,s0);
 # 3. CSS: PESTAÑAS NEGRAS, LETRA GRANDE Y FILTROS FINOS
 # 3. CSS: SUPER-FORZADO DE TAMAÑOS
 # 3. CSS: CORRECCIÓN DE COLORES Y TAMAÑOS GRANDES
+# 3. CSS: FORZADO DE COLOR NEGRO EN ETIQUETAS DE FILTROS
 st.markdown("""
     <style>
     /* 1. APP FONDO BLANCO */
     .stApp { background-color: white !important; }
 
-    /* 2. PESTAÑAS (TABS) - MUY GRANDES Y NEGRAS */
+    /* 2. PESTAÑAS (TABS) - GRANDES Y NEGRAS */
     button[data-baseweb="tab"] p {
         font-size: 35px !important; 
         font-weight: bold !important;
         color: black !important;
     }
-    button[data-baseweb="tab"][aria-selected="true"] {
-        border-bottom-color: black !important;
-    }
     
-    /* 3. TÍTULOS (LABELS) - SIEMPRE NEGROS Y GRANDES */
-    .stWidgetLabel p {
+    /* 3. TÍTULO DEL BUSCADOR (Específico para TextInput) */
+    [data-testid="stTextInput"] label p {
         font-size: 28px !important;
         font-weight: bold !important;
         color: black !important;
+        -webkit-text-fill-color: black !important;
     }
 
-    /* 4. BUSCADOR - FONDO NEGRO Y LETRA BLANCA */
+    /* 4. TÍTULOS DE LOS FILTROS (Específico para Selectbox) */
+    [data-testid="stSelectbox"] label p {
+        font-size: 28px !important;
+        font-weight: bold !important;
+        color: black !important; /* Forzar negro */
+        -webkit-text-fill-color: black !important; /* Forzar negro en navegadores basados en Chrome */
+    }
+
+    /* 5. BUSCADOR - FONDO NEGRO Y LETRA BLANCA */
     [data-testid="stTextInput"] > div {
         background-color: black !important;
         border-radius: 8px !important;
@@ -56,20 +63,15 @@ st.markdown("""
         -webkit-text-fill-color: white !important;
     }
 
-    /* 5. FILTROS (SELECTBOX) - FONDO BLANCO Y LETRA NEGRA */
+    /* 6. FILTROS (SELECTBOX) - FONDO BLANCO Y LETRA NEGRA */
     [data-testid="stSelectbox"] > div {
         background-color: white !important;
         border: 1px solid #cccccc !important;
         border-radius: 8px !important;
     }
-    /* Texto dentro del filtro */
     [data-testid="stSelectbox"] div[data-baseweb="select"] {
         font-size: 22px !important;
         color: black !important;
-    }
-    /* Forzar que el fondo del menú desplegable sea blanco */
-    div[data-baseweb="select"] > div {
-        background-color: white !important;
     }
     /* Texto seleccionado en negro */
     [data-testid="stSelectbox"] span {
@@ -77,26 +79,21 @@ st.markdown("""
         -webkit-text-fill-color: black !important;
     }
 
-    /* 6. BOTÓN LIMPIAR */
+    /* 7. BOTÓN LIMPIAR */
     div.stButton > button {
         font-size: 22px !important;
-        padding: 10px 25px !important;
         background-color: #f8f9fa;
         color: black;
         border: 1px solid #cccccc;
     }
-    div.stButton > button:hover {
-        background-color: #ff4b4b;
-        color: white;
-    }
 
-    /* 7. TEXTO DE REGISTROS (Línea 121) */
+    /* 8. TEXTO DE REGISTROS */
     .stMarkdown p {
         font-size: 24px !important;
         color: black !important;
     }
 
-    /* Ocultar instrucciones de Streamlit */
+    /* Ocultar instrucciones */
     [data-testid="InputInstructions"] { display: none !important; }
     </style>
 """, unsafe_allow_html=True)
