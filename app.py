@@ -2,10 +2,10 @@ import streamlit as st
 import pandas as pd
 import streamlit.components.v1 as components
 
-# 1. CONFIGURACIÓN INICIAL
+# 1. FORZAR MODO CLARO A NIVEL DE NAVEGADOR
 st.set_page_config(page_title="Búsqueda Protocolos", layout="wide")
 
-# 2. CHAT FLOTANTE PERSONALIZADO (Tu código Tawk.to)
+# 2. CHAT FLOTANTE
 def chat_flotante():
     components.html("""
         <script type="text/javascript">
@@ -19,47 +19,52 @@ def chat_flotante():
         s0.parentNode.insertBefore(s1,s0);
         })();
         </script>
-    """, height=100)
+    """, height=0)
 
 chat_flotante()
 
-# 3. CSS EXTREMO: FUERZA EL COLOR NEGRO EN CUALQUIER TEMA
+# 3. CSS "BLINDADO" CONTRA INVERSIÓN DE COLORES
 st.markdown("""
     <style>
-    /* Forzar fondo blanco en toda la aplicación */
-    html, body, [data-testid="stAppViewContainer"], .main, .stApp {
-        background-color: white !important;
+    /* Bloquea la inversión de colores del navegador */
+    :root {
+        color-scheme: light !important;
     }
 
-    /* Forzar color NEGRO en absolutamente todos los textos */
-    h1, h2, h3, p, span, label, div, input, .stMarkdown, [data-testid="stMarkdownContainer"] p {
+    /* Fuerza fondo blanco y texto negro en todo */
+    html, body, [data-testid="stAppViewContainer"], .stApp {
+        background-color: #FFFFFF !important;
         color: #000000 !important;
-        fill: #000000 !important;
     }
 
-    /* Estilo de los nombres de los filtros */
+    /* Asegura que los títulos sean negros */
+    h1, h2, h3, .filter-label {
+        color: #000000 !important;
+    }
+
+    /* Estilo para las etiquetas de los filtros */
     .filter-label {
-        color: #000000 !important;
-        font-weight: bold !important;
-        font-size: 16px !important;
+        font-weight: bold;
+        font-size: 16px;
         margin-bottom: 5px;
+        display: block;
     }
 
-    /* Barra de búsqueda y Selectores */
-    input[type="text"], .stTextInput div div input, div[data-baseweb="select"] {
-        background-color: #F1F3F4 !important;
+    /* Caja de búsqueda y Selectores con borde negro para que se vean */
+    input, div[data-baseweb="select"] {
+        background-color: #F8F9FA !important;
         color: #000000 !important;
-        border: 1px solid #000000 !important;
+        border: 2px solid #000000 !important;
     }
-    
-    /* Color de las flechas y textos de selección */
+
+    /* Texto dentro de los menús desplegables */
     div[data-baseweb="select"] * {
         color: #000000 !important;
     }
     
-    /* Forzar tabla blanca con texto negro */
-    [data-testid="stDataFrame"] {
-        background-color: white !important;
+    /* Forzar que la tabla de datos tenga texto negro */
+    [data-testid="stDataFrame"] * {
+        color: #000000 !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -67,52 +72,45 @@ st.markdown("""
 # 4. CARGA DE DATOS
 @st.cache_data(ttl=30)
 def load_data():
-    # REEMPLAZA ESTE LINK CON TU CSV DE GOOGLE SHEETS
+    # REEMPLAZA CON TU LINK DE GOOGLE SHEETS
     url = "TU_LINK_DE_GOOGLE_SHEETS_AQUI" 
     try:
-        df = pd.read_csv(url)
-        return df
+        return pd.read_csv(url)
     except:
-        # Datos ficticios para verificar que el texto negro funciona
-        data = {
-            'N°': ['001'], 'Fecha': ['2026-01-01'], 'Hora': ['08:00'], 
-            'Falta': ['Ejemplo'], 'Hecho': ['Ejemplo'], 'Realizado': ['Ejemplo'], 
-            'Lo Tiene': ['Ejemplo'], 'Protocolo': ['Sí']
-        }
-        return pd.DataFrame(data)
+        # Fila de prueba para confirmar que se ve el negro
+        return pd.DataFrame({'N°': ['1'], 'Hecho': ['Prueba Negro'], 'Realizado': ['OK'], 'Lo Tiene': ['SI'], 'Protocolo': ['A']})
 
 df = load_data()
 
 # --- INTERFAZ ---
 st.title("Sistema de Búsqueda y Filtros")
 
-st.markdown('<p class="filter-label">Buscador General</p>', unsafe_allow_html=True)
-search_query = st.text_input("Buscador", placeholder="Escriba aquí para buscar...", label_visibility="collapsed")
+st.markdown('<span class="filter-label">Buscador General</span>', unsafe_allow_html=True)
+search_query = st.text_input("Buscador", placeholder="Escribe aquí para buscar...", label_visibility="collapsed")
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# Filtros en columnas
-c1, c2, c3 = st.columns(3)
-with c1:
-    st.markdown('<p class="filter-label">Filtrar por Hecho</p>', unsafe_allow_html=True)
+col1, col2, col3 = st.columns(3)
+with col1:
+    st.markdown('<span class="filter-label">Filtrar por Hecho</span>', unsafe_allow_html=True)
     f_hecho = st.selectbox("H", ["Todos"] + sorted(list(df['Hecho'].unique())), key="h", label_visibility="collapsed")
-with c2:
-    st.markdown('<p class="filter-label">Filtrar por Realizado</p>', unsafe_allow_html=True)
+with col2:
+    st.markdown('<span class="filter-label">Filtrar por Realizado</span>', unsafe_allow_html=True)
     f_realizado = st.selectbox("R", ["Todos"] + sorted(list(df['Realizado'].unique())), key="r", label_visibility="collapsed")
-with c3:
-    st.markdown('<p class="filter-label">Filtrar por Lo Tiene</p>', unsafe_allow_html=True)
+with col3:
+    st.markdown('<span class="filter-label">Filtrar por Lo Tiene</span>', unsafe_allow_html=True)
     f_lo_tiene = st.selectbox("L", ["Todos"] + sorted(list(df['Lo Tiene'].unique())), key="l", label_visibility="collapsed")
 
 st.markdown("<br>", unsafe_allow_html=True)
-st.markdown('<p class="filter-label">Filtrar por Protocolo</p>', unsafe_allow_html=True)
+st.markdown('<span class="filter-label">Filtrar por Protocolo</span>', unsafe_allow_html=True)
 f_protocolo = st.selectbox("P", ["Todos"] + sorted(list(df['Protocolo'].unique())), key="p", label_visibility="collapsed")
 
-# Lógica de filtrado
+# Filtrado
 filtered_df = df.copy()
 if search_query:
     mask = df.apply(lambda row: row.astype(str).str.contains(search_query, case=False).any(), axis=1)
     filtered_df = filtered_df[mask]
 
-# Mostrar Resultados
-st.markdown(f'<p style="color:black;">Mostrando {len(filtered_df)} registros encontrados</p>', unsafe_allow_html=True)
+# Tabla final
+st.write(f"**Registros encontrados: {len(filtered_df)}**")
 st.dataframe(filtered_df, use_container_width=True, hide_index=True)
