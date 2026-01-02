@@ -66,6 +66,7 @@ st.markdown("""
     div.stButton > button { 
         background-color: #f8f9fa; color: black; border: 1px solid #cccccc; font-weight: bold; border-radius: 5px;
     }
+    div.stButton > button:hover { background-color: #ff4b4b; color: white; border: 1px solid #ff4b4b; }
 
     [data-testid="InputInstructions"] { display: none !important; }
     </style>
@@ -74,20 +75,23 @@ st.markdown("""
 # 4. CARGA DE DATOS POR HOJA
 @st.cache_data(ttl=5)
 def load_sheet_data(sheet_name):
-    # ID base de tu documento (extraído de tu URL)
     doc_id = "2PACX-1vRXI7sk1CdNqrMCi3lapZjt8DMoRwjVsiSknQwjgvBjVJHbusZ4GWjDYTJzTl40wictijbYo8ESq7gI"
-    # Formato de URL para leer hojas específicas por nombre
     url = f"https://docs.google.com/spreadsheets/d/e/{doc_id}/pub?sheet={sheet_name}&output=csv"
-    
     try:
         data = pd.read_csv(url)
         data.columns = data.columns.str.strip()
         return data
     except:
-        # Retorna tabla vacía si la hoja no existe aún
         return pd.DataFrame(columns=['Nº Documento', 'Fecha', 'Hora', 'Falta', 'Hecho por', 'Realizado por', 'Lo tiene', 'Protocolo'])
 
-# 5. ESTRUCTURA DE PESTAÑAS
+# 5. LÓGICA DE LIMPIEZA ESPECÍFICA
+def reset_tab_fields(sheet):
+    st.session_state[f"search_{sheet}"] = ""
+    st.session_state[f"f1_{sheet}"] = "Todos"
+    st.session_state[f"f2_{sheet}"] = "Todos"
+    st.session_state[f"f3_{sheet}"] = "Todos"
+
+# 6. ESTRUCTURA DE PESTAÑAS
 st.markdown("<h1 style='text-align: center; color: black;'>Sistema de Búsqueda y Filtros</h1>", unsafe_allow_html=True)
 
 nombres_pestanas = ["Escrituras", "Poderes", "Recos", "Actas", "Certificaciones", "Declaraciones"]
@@ -99,11 +103,10 @@ for i, tab in enumerate(tabs):
         df = load_sheet_data(nombre_hoja)
         
         # --- BUSCADOR ---
-        # Usamos un key único por pestaña para que no choquen
-        search_query = st.text_input(f"Buscar en {nombre_hoja}", placeholder="Escriba aquí para buscar...", key=f"search_{nombre_hoja}")
+        search_query = st.text_input(f"Buscar en {nombre_hoja}", placeholder="Escriba aquí...", key=f"search_{nombre_hoja}")
 
-        if st.button("Limpiar Campos", key=f"btn_{nombre_hoja}"):
-            st.rerun()
+        # Botón Limpiar con la nueva lógica
+        st.button("🧹 Limpiar Campos", key=f"btn_{nombre_hoja}", on_click=reset_tab_fields, args=(nombre_hoja,))
 
         st.markdown("<br>", unsafe_allow_html=True)
 
@@ -112,7 +115,7 @@ for i, tab in enumerate(tabs):
         
         def get_options(column_name, current_df):
             if column_name in current_df.columns:
-                return ["Todos"] + sorted(list(current_df[column_name].dropna().unique()))
+                return ["Todos"] + sorted(list(current_df[column_name].dropna().astype(str).unique()))
             return ["Todos"]
 
         with col1:
@@ -126,12 +129,14 @@ for i, tab in enumerate(tabs):
         df_final = df.copy()
         if search_query:
             df_final = df_final[df_final.apply(lambda row: row.astype(str).str.contains(search_query, case=False).any(), axis=1)]
+        
+        # Filtrado por selectores (solo si no es "Todos")
         if f_hecho != "Todos":
-            df_final = df_final[df_final['Hecho por'] == f_hecho]
+            df_final = df_final[df_final['Hecho por'].astype(str) == f_hecho]
         if f_realizado != "Todos":
-            df_final = df_final[df_final['Realizado por'] == f_realizado]
+            df_final = df_final[df_final['Realizado por'].astype(str) == f_realizado]
         if f_lo_tiene != "Todos":
-            df_final = df_final[df_final['Lo tiene'] == f_lo_tiene]
+            df_final = df_final[df_final['Lo tiene'].astype(str) == f_lo_tiene]
 
         st.markdown(f"**Registros encontrados en {nombre_hoja}: {len(df_final)}**")
         st.dataframe(df_final, use_container_width=True, hide_index=True)
