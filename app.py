@@ -161,32 +161,48 @@ for i, tab in enumerate(tabs):
 # --- CHAT FLOTANTE POSICIONADO ABAJO A LA DERECHA ---
 # --- CONFIGURACIÓN FINAL DEL CHAT FLOTANTE ---
 # --- FORZAR CHAT FIJO EN LA PANTALLA ---
+# --- CHAT TOTALMENTE FIJO (STICKY) ---
 st.markdown("""
     <style>
-    /* Buscamos el iframe que contiene el chat y lo fijamos a la ventana del navegador */
+    /* Forzamos que el contenedor del iframe no se mueva con el scroll */
     iframe[title="streamlit.components.v1.html"] {
         position: fixed !important;
-        bottom: 20px !important;  /* Distancia desde el borde inferior */
-        right: 20px !important;   /* Distancia desde el borde derecho */
-        z-index: 999999 !important; /* Asegura que esté por encima de la tabla */
+        bottom: 20px !important;
+        right: 20px !important;
+        z-index: 999999 !important;
         border: none !important;
-        height: 520px !important; /* Espacio para que la ventana se abra hacia arriba */
-        width: 350px !important;
+    }
+
+    /* Ajuste para evitar que el contenedor invisible bloquee la tabla */
+    iframe[title="streamlit.components.v1.html"] {
+        pointer-events: none !important;
+        width: 100px !important; /* Tamaño pequeño cuando está cerrado */
+        height: 100px !important;
+    }
+
+    /* Cuando el chat se activa o necesitas espacio para la ventana abierta */
+    /* Nota: Tawk.to maneja su propia expansión, pero el contenedor de Streamlit debe permitirlo */
+    .stComponents {
+        position: fixed !important;
+        bottom: 0 !important;
+        right: 0 !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# Asegúrate de que el componente de abajo sea el único que carga el script de Tawk.to
+# El script debe ir dentro de un div que permita clics
 st.components.v1.html("""
-    <script type="text/javascript">
-        var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-        (function(){
-            var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-            s1.async=true;
-            s1.src='https://embed.tawk.to/695732610a00df198198e359/1jdu9pk10';
-            s1.charset='UTF-8';
-            s1.setAttribute('crossorigin','*');
-            s0.parentNode.insertBefore(s1,s0);
-        })();
-    </script>
-""", height=520)
+    <div style="pointer-events: auto !important;">
+        <script type="text/javascript">
+            var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+            (function(){
+                var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+                s1.async=true;
+                s1.src='https://embed.tawk.to/695732610a00df198198e359/1jdu9pk10';
+                s1.charset='UTF-8';
+                s1.setAttribute('crossorigin','*');
+                s0.parentNode.insertBefore(s1,s0);
+            })();
+        </script>
+    </div>
+""", height=600) # Dejamos altura suficiente para cuando el usuario abra la ventana
