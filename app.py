@@ -2,20 +2,10 @@ import streamlit as st
 import pandas as pd
 import streamlit.components.v1 as components
 
-# 1. FORZAR MODO CLARO Y TEXTO NEGRO (CSS BÁSICO)
-st.markdown("""
-    <style>
-    .stApp { background-color: white !important; }
-    * { color: black !important; -webkit-text-fill-color: black !important; }
-    div[data-baseweb="select"] > div, input {
-        border: 2px solid black !important;
-        background-color: #f0f2f6 !important;
-    }
-    </style>
-""", unsafe_allow_html=True)
+# 1. CONFIGURACIÓN DE PÁGINA
+st.set_page_config(page_title="Búsqueda Protocolos", layout="wide")
 
-# 2. EL CHAT (Tu código original sin tocar nada)
-# Usamos las triples comillas para proteger el script
+# 2. CHAT TAWK.TO (Sin tocar nada del script original)
 components.html("""
 <script type="text/javascript">
 var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
@@ -30,18 +20,54 @@ s0.parentNode.insertBefore(s1,s0);
 </script>
 """, height=0)
 
-# 3. INTERFAZ SIMPLE
-st.title("🔎 Sistema de Búsqueda")
+# 3. CSS PARA SOLUCIONAR EL MODO OSCURO (Letras Negras)
+st.markdown("""
+    <style>
+    /* Forzar fondo blanco */
+    .stApp { background-color: white !important; }
+    
+    /* Forzar texto negro en todo (títulos, etiquetas y tablas) */
+    h1, h2, h3, p, span, label, b, .stMarkdownContainer p { 
+        color: black !important; 
+        -webkit-text-fill-color: black !important;
+    }
+    
+    /* Estilo para los cuadros de búsqueda y selectores */
+    div[data-baseweb="select"] > div, input {
+        border: 2px solid black !important;
+        background-color: #f0f2f6 !important;
+        color: black !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
-# Carga de datos segura
-try:
+# 4. CARGA DE DATOS
+@st.cache_data(ttl=10)
+def load_data():
     # REEMPLAZA ESTO CON TU LINK CSV DE GOOGLE SHEETS
-    url = "TU_LINK_AQUI"
-    df = pd.read_csv(url)
-except:
-    df = pd.DataFrame({'Columna': ['Sin datos'], 'Info': ['Pega el link de Sheets']})
+    url = "TU_LINK_AQUI" 
+    try:
+        return pd.read_csv(url)
+    except:
+        return pd.DataFrame({'Estado': ['Cargando...'], 'Aviso': ['Pega el link de Sheets']})
 
-st.write("### Buscador")
-search = st.text_input("Buscar...", label_visibility="collapsed")
+df = load_data()
 
-st.dataframe(df, use_container_width=True)
+# 5. INTERFAZ (Corrigiendo el error de 'label' vacío de tus logs)
+st.title("Sistema de Búsqueda y Filtros")
+
+# SOLUCIÓN LOGS: No dejar el label vacío, usar un nombre real
+search_query = st.text_input(label="Buscador General", placeholder="🔍 Buscar en todos los campos...")
+
+st.markdown("---")
+
+col1, col2, col3 = st.columns(3)
+with col1:
+    f_hecho = st.selectbox(label="Filtrar por Hecho", options=["Todos"] + (list(df['Hecho'].unique()) if 'Hecho' in df.columns else []))
+with col2:
+    f_realizado = st.selectbox(label="Filtrar por Realizado", options=["Todos"] + (list(df['Realizado'].unique()) if 'Realizado' in df.columns else []))
+with col3:
+    f_lo_tiene = st.selectbox(label="Filtrar por Lo Tiene", options=["Todos"] + (list(df['Lo Tiene'].unique()) if 'Lo Tiene' in df.columns else []))
+
+# SOLUCIÓN LOGS: Actualización de use_container_width
+st.dataframe(df, width=None) # width=None o width='stretch' según tu versión
