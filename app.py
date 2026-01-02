@@ -5,9 +5,10 @@ import streamlit.components.v1 as components
 # 1. CONFIGURACIÓN
 st.set_page_config(page_title="Búsqueda Protocolos", layout="wide")
 
-# 2. CHAT TAWK.TO
+# 2. CHAT TAWK.TO Y SCRIPT DE AUTO-LIMPIEZA
 components.html("""
 <script type="text/javascript">
+// Chat Tawk.to
 var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
 (function(){
 var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
@@ -17,10 +18,26 @@ s1.charset='UTF-8';
 s1.setAttribute('crossorigin','*');
 s0.parentNode.insertBefore(s1,s0);
 })();
+
+// Script para limpiar la barra de búsqueda al hacer clic
+document.addEventListener('mousedown', function(e) {
+    var inputs = window.parent.document.querySelectorAll('input[type="text"]');
+    inputs.forEach(function(input) {
+        // Solo afecta al primer input (Buscador General)
+        if (input.placeholder === "Escriba aquí para buscar...") {
+            input.addEventListener('click', function() {
+                if (this.value !== "") {
+                    this.value = "";
+                    this.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+            });
+        }
+    });
+}, {once: true}); 
 </script>
 """, height=0)
 
-# 3. CSS: DIFERENCIACIÓN DE COLORES (BUSCADOR BLANCO / FILTROS NEGRO)
+# 3. CSS ACTUALIZADO (Mantiene buscador oscuro y filtros blancos con letras negras)
 st.markdown("""
     <style>
     .stApp { background-color: white !important; }
@@ -35,39 +52,36 @@ st.markdown("""
         box-shadow: none !important;
     }
 
-    /* Forzar letras blancas SOLO en el input de texto */
     [data-testid="stTextInput"] input {
         color: white !important;
         -webkit-text-fill-color: white !important;
     }
 
-    /* Ocultar instrucciones "Press Enter" */
+    /* Ocultar "Press Enter" */
     [data-testid="stTextInput"] [data-testid="InputInstructions"],
     [data-testid="stTextInput"] button {
         display: none !important;
     }
 
-    /* --- FILTROS SELECTBOX (TEXTO NEGRO SIEMPRE) --- */
+    /* --- FILTROS SELECTBOX (TEXTO NEGRO) --- */
     [data-testid="stSelectbox"] > div {
         background-color: white !important;
         border: 2px solid #000000 !important;
         border-radius: 8px !important;
     }
 
-    /* Forzar texto negro en el valor seleccionado y en la lista */
     [data-testid="stSelectbox"] div[data-baseweb="select"] span,
     [data-testid="stSelectbox"] div[data-baseweb="select"] div {
         color: black !important;
         -webkit-text-fill-color: black !important;
     }
 
-    /* Quitar cursor de escritura en filtros */
     [data-testid="stSelectbox"] input {
         caret-color: transparent !important;
         cursor: pointer !important;
     }
 
-    /* --- LIMPIEZA DE INTERFACES --- */
+    /* --- LIMPIEZA GENERAL --- */
     [data-testid="stTextInput"] > div > div, 
     [data-testid="stSelectbox"] > div > div {
         border: none !important;
@@ -75,7 +89,6 @@ st.markdown("""
         background-color: transparent !important;
     }
 
-    /* Fondo blanco para la lista desplegable de los filtros */
     div[data-baseweb="select"] > div {
         background-color: white !important;
     }
@@ -100,6 +113,7 @@ df = load_data()
 # 5. INTERFAZ
 st.markdown("<h1 style='text-align: center; color: black;'>Sistema de Búsqueda</h1>", unsafe_allow_html=True)
 
+# El placeholder debe coincidir con el del script de JS arriba
 search_query = st.text_input("Buscador General", placeholder="Escriba aquí para buscar...")
 
 st.markdown("<br>", unsafe_allow_html=True)
