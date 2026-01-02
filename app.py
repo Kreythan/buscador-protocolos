@@ -112,7 +112,7 @@ search_query = st.text_input("Buscador General",
 # Botón de Limpiar a la izquierda
 col_btn, _ = st.columns([1, 5])
 with col_btn:
-    st.button("🧹 Limpiar Búsqueda", on_click=clear_search)
+    st.button("Limpiar Búsqueda", on_click=clear_search)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
