@@ -64,7 +64,7 @@ def load_data():
 df = load_data()
 
 # 5. INTERFAZ VISUAL
-st.markdown("<h1 style='text-align: center; color: black; font-size: 40px;'>Sistema de Búsqueda y Filtros</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color-text: black; font-size: 40px;'>Sistema de Búsqueda y Filtros</h1>", unsafe_allow_html=True)
 
 # Buscador General
 search_query = st.text_input("Buscador General (Escribe aquí)", placeholder="🔍 Buscar...")
