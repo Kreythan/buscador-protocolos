@@ -23,7 +23,7 @@ st.markdown("""
     <style>
     /* 1. Localizamos el iframe del chat y lo sacamos del flujo normal */
     iframe[title="streamlit.components.v1.html"] {
-        position: fixed !important;
+        position: right !important;
         bottom: 20px !important;
         right: 20px !important;
         width: 350px !important; /* Ancho suficiente para la ventana abierta */
