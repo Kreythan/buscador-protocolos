@@ -29,14 +29,14 @@ st.markdown("""
     /* AGRANDAR LETRAS DE TODO EL SISTEMA */
     html, body, [class*="st-"] {
         font-size: 20px !important;
-        color: black !important;
+        text-color: black !important;
     }
 
     /* Títulos de los filtros más grandes y negros */
     label, .stMarkdown p {
         font-size: 22px !important;
         font-weight: bold !important;
-        color: black !important;
+        text-color: black !important;
     }
 
     /* Agrandar texto dentro de los cuadros (Inputs y Selects) */
