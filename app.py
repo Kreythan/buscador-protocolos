@@ -5,73 +5,92 @@ import streamlit.components.v1 as components
 # 1. CONFIGURACIÓN
 st.set_page_config(page_title="Búsqueda Protocolos", layout="wide")
 
-# 2. CHAT TAWK.TO (Versión corregida con tus IDs)
-# Usamos un height mayor para permitir que el script se inicialice correctamente
-components.html(f"""
-    <script type="text/javascript">
-    var Tawk_API=Tawk_API||{{}}, Tawk_LoadStart=new Date();
-    (function(){{
-    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-    s1.async=true;
-    s1.src='https://embed.tawk.to/695732610a00df198198e359/1jdu9pk10';
-    s1.charset='UTF-8';
-    s1.setAttribute('crossorigin','*');
-    s0.parentNode.insertBefore(s1,s0);
-    }})();
-    </script>
-    """, height=0)
+# 2. CHAT TAWK.TO (Versión estable anterior)
+components.html("""
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/695732610a00df198198e359/1jdu9pk10';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+""", height=0)
 
-# 3. CSS: BUSCADOR OSCURO, FILTROS BLANCOS Y BOTÓN
+# 3. CSS: BUSCADOR OSCURO, FILTROS BLANCOS CON LETRAS NEGRAS
 st.markdown("""
     <style>
-    .stApp {{ background-color: white !important; }}
-    label {{ font-size: 20px !important; font-weight: bold !important; color: black !important; }}
+    .stApp { background-color: white !important; }
+    label { font-size: 20px !important; font-weight: bold !important; color: black !important; }
 
-    /* --- BARRA DE BÚSQUEDA GENERAL --- */
+    /* --- BARRA DE BÚSQUEDA GENERAL (TEXTO BLANCO) --- */
     [data-testid="stTextInput"] > div, 
-    [data-testid="stTextInput"] > div:focus-within {{
+    [data-testid="stTextInput"] > div:focus-within {
         background-color: #262730 !important; 
         border: 2px solid #000000 !important;
         border-radius: 8px !important;
         box-shadow: none !important;
-    }}
+    }
 
-    [data-testid="stTextInput"] input {{
+    [data-testid="stTextInput"] input {
         color: white !important;
         -webkit-text-fill-color: white !important;
-    }}
+    }
 
+    /* Ocultar instrucciones "Press Enter" */
     [data-testid="stTextInput"] [data-testid="InputInstructions"],
-    [data-testid="stTextInput"] button {{
+    [data-testid="stTextInput"] button {
         display: none !important;
-    }}
+    }
 
-    /* --- FILTROS SELECTBOX --- */
-    [data-testid="stSelectbox"] > div {{
+    /* --- FILTROS SELECTBOX (TEXTO NEGRO SIEMPRE) --- */
+    [data-testid="stSelectbox"] > div {
         background-color: white !important;
         border: 2px solid #000000 !important;
         border-radius: 8px !important;
-    }}
+    }
 
+    /* Forzar texto negro en el valor seleccionado y en la lista */
     [data-testid="stSelectbox"] div[data-baseweb="select"] span,
-    [data-testid="stSelectbox"] div[data-baseweb="select"] div {{
+    [data-testid="stSelectbox"] div[data-baseweb="select"] div {
         color: black !important;
         -webkit-text-fill-color: black !important;
-    }}
+    }
+
+    /* Quitar cursor de escritura en filtros */
+    [data-testid="stSelectbox"] input {
+        caret-color: transparent !important;
+        cursor: pointer !important;
+    }
 
     /* --- BOTÓN DE LIMPIEZA --- */
-    div.stButton > button {{
+    div.stButton > button {
         background-color: #f0f2f6;
         color: black;
         border: 1px solid #000000;
         border-radius: 5px;
         font-weight: bold;
-    }}
-    div.stButton > button:hover {{
+    }
+    div.stButton > button:hover {
         background-color: #ff4b4b;
         color: white;
         border: 1px solid #ff4b4b;
-    }}
+    }
+
+    /* --- LIMPIEZA DE INTERFACES --- */
+    [data-testid="stTextInput"] > div > div, 
+    [data-testid="stSelectbox"] > div > div {
+        border: none !important;
+        box-shadow: none !important;
+        background-color: transparent !important;
+    }
+
+    div[data-baseweb="select"] > div {
+        background-color: white !important;
+    }
     </style>
 """, unsafe_allow_html=True)
 
