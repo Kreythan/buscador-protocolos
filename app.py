@@ -20,10 +20,10 @@ s0.parentNode.insertBefore(s1,s0);
 </script>
 """, height=0)
 
-# 3. CSS PARA DISEÑO LIMPIO (SIN SOMBRAS, BORDE NEGRO)
+# 3. CSS PARA DISEÑO LIMPIO (BLANCO TOTAL Y BORDE ÚNICO)
 st.markdown("""
     <style>
-    /* Fondo general blanco puro */
+    /* Fondo general blanco */
     .stApp { background-color: white !important; }
     
     /* Títulos de los campos */
@@ -34,42 +34,48 @@ st.markdown("""
         margin-bottom: 8px !important;
     }
 
-    /* DISEÑO LIMPIO: Sin sombras, fondo blanco y borde negro sólido */
-    input, div[data-baseweb="select"] {
-        background-color: #FFFFFF !important;
-        border: 2px solid #000000 !important; /* Borde negro sólido */
-        box-shadow: none !important;           /* Quitar sombras */
+    /* CORRECCIÓN: Fondo blanco total (quita el plomo) y borde negro simple */
+    input, div[data-baseweb="select"] > div {
+        background-color: white !important; 
+        border: 2.5px solid #000000 !important; 
+        box-shadow: none !important; /* Elimina sombras que parecen doble borde */
         border-radius: 8px !important;
         height: 50px !important;
     }
 
-    /* Color de texto negro dentro de los cuadros */
+    /* Asegurar que el fondo del contenedor del select sea blanco */
+    div[data-baseweb="select"] {
+        background-color: transparent !important;
+        border: none !important;
+    }
+
+    /* Texto negro dentro de los cuadros */
     input, div[data-baseweb="select"] div, div[data-baseweb="select"] span {
         color: black !important;
         font-size: 18px !important;
     }
 
-    /* Quitar efectos de enfoque (foco azul/rojo) */
+    /* Eliminar el efecto de borde azul/sombra al hacer clic */
     input:focus, div[data-baseweb="select"]:focus-within {
         border-color: #000000 !important;
         box-shadow: none !important;
+        outline: none !important;
     }
 
-    /* Estilo de la tabla de resultados */
-    .stDataFrame { border: none !important; }
-    
-    /* Eliminar cualquier sombra en los contenedores de Streamlit */
-    [data-testid="stVerticalBlock"] > div {
+    /* Quitar bordes internos de Streamlit */
+    [data-testid="stTextInput"] > div, [data-testid="stSelectbox"] > div {
+        border: none !important;
         box-shadow: none !important;
     }
+
+    .stDataFrame { border: none !important; }
     </style>
 """, unsafe_allow_html=True)
 
 # 4. CARGA DE DATOS
 @st.cache_data(ttl=10)
 def load_data():
-    # REEMPLAZA ESTO CON TU LINK CSV DE GOOGLE SHEETS
-    url = "TU_LINK_AQUI" 
+    url = "TU_LINK_AQUI" # Reemplaza con tu link real de Google Sheets
     try:
         return pd.read_csv(url)
     except:
