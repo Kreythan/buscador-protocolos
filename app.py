@@ -38,7 +38,7 @@ st.markdown("""
 @st.cache_data(ttl=5) # Cache corto para ver cambios rápido
 def load_data():
     # REEMPLAZA ESTA URL CON EL LINK CSV DE TU IMAGEN
-    url = "TU_LINK_DE_GOOGLE_SHEETS_AQUI" 
+    url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRXI7sk1CdNqrMCi3lapZjt8DMoRwjVsiSknQwjgvBjVJHbusZ4GWjDYTJzTl40wictijbYo8ESq7gI/pub?output=ods" 
     try:
         data = pd.read_csv(url)
         # Limpiar espacios en los nombres de las columnas por si acaso
@@ -64,7 +64,7 @@ search_query = st.text_input("Buscador General", placeholder="Escriba aquí para
 
 col_btn, _ = st.columns([1, 5])
 with col_btn:
-    st.button("🧹 Limpiar Campos", on_click=clear_fields)
+    st.button("Limpiar Campos", on_click=clear_fields)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
