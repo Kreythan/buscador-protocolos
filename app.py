@@ -103,7 +103,7 @@ def clear_fields():
 
 @st.cache_data(ttl=10)
 def load_data():
-    url = "TU_LINK_DE_GOOGLE_SHEETS_AQUI" 
+    url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRXI7sk1CdNqrMCi3lapZjt8DMoRwjVsiSknQwjgvBjVJHbusZ4GWjDYTJzTl40wictijbYo8ESq7gI/pubhtml" 
     try:
         return pd.read_csv(url)
     except:
