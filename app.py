@@ -29,17 +29,22 @@ st.markdown(f"""
         overflow: auto !important;
     }}
 
+
+
 /* TÍTULOS (LABELS) */
     .stWidgetLabel p, label p {{
         font-size: 24px !important;
-        font-weight: bold !important;
+        font-weight: normal !important;
         color: {text_color} !important;
         -webkit-text-fill-color: {text_color} !important;
     }}
+
+
+    
     /* DESACTIVAR BOTÓN DE DESCARGA (Lo bloquea para que no haga nada) */
     button[title="Download as CSV"] {{
         pointer-events: none !important;
-        opacity: 0.5 !important; /* Opcional: se ve un poco más claro para indicar que no funciona */
+        opacity: 1 !important; /* Opcional: se ve un poco más claro para indicar que no funciona */
         cursor: not-allowed !important;
     }}
 
