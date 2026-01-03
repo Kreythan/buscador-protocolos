@@ -172,9 +172,7 @@ st.markdown("""
         display: none !important;
     }
     
-    /* Si quieres quitar TODA la barra de herramientas negra de la imagen, usa este: */
-    [data-testid="stElementToolbar"] {
-        display: none !important;
+  
     }
     </style>
 """, unsafe_allow_html=True)
