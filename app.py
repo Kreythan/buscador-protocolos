@@ -14,35 +14,7 @@ def toggle_theme():
 
 # --- CONFIGURACIÓN DEL POP-UP FLOTANTE ---
 # --- CÓDIGO PARA POP-UP REAL (SIEMPRE VISIBLE) ---
-st.markdown("""
-    <style>
-    /* 1. SELECCIONAMOS EL CONTENEDOR PADRE DE STREAMLIT */
-    /* Buscamos el bloque que contiene nuestro chat y lo despegamos de la página */
-    div[data-testid="stVerticalBlock"] > div:has(iframe[title="streamlit.components.v1.html"]) {
-        position: fixed !important;
-        bottom: 20px !important;
-        right: 20px !important;
-        width: 350px !important;
-        height: 520px !important;
-        z-index: 999999 !important;
-    }
 
-    /* 2. FORZAMOS EL IFRAME PARA QUE NO TENGA MÁRGENES */
-    iframe[title="streamlit.components.v1.html"] {
-        position: fixed !important;
-        bottom: 20px !important;
-        right: 20px !important;
-        z-index: 1000000 !important;
-        pointer-events: none !important; /* Deja pasar clics a la tabla si el chat está cerrado */
-    }
-
-    /* 3. LIBERAMOS LOS CLICS PARA LA BURBUJA */
-    /* Esto permite que aunque el cuadro sea invisible, la burbuja sí responda */
-    iframe[title="streamlit.components.v1.html"] {
-        pointer-events: auto !important;
-    }
-    </style>
-""", unsafe_allow_html=True)
 
 # Mantenemos tu componente que no da errores
 st.components.v1.html("""
