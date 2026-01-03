@@ -109,7 +109,7 @@ col_title, col_theme = st.columns([4, 1])
 with col_title:
     st.markdown(f"<h1 style='color: {text_color};'>Sistema de Búsqueda y Filtros</h1>", unsafe_allow_html=True)
 with col_theme:
-    label_tema = "🌙 Modo Oscuro" if st.session_state.dark_mode else "☀️ Modo Claro"
+    label_tema = "☀️ Modo Claro" if st.session_state.dark_mode else "🌙 Modo Oscuro"
     st.button(label_tema, on_click=toggle_theme)
 
 # 7. ESTRUCTURA DE PESTAÑAS
