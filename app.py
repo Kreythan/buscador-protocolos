@@ -190,8 +190,31 @@ for i, tab in enumerate(tabs):
 
 
 # Mantenemos tu componente que no da errores
-st.components.v1.html("""
-    <div style="background: transparent;">
+st.markdown("""
+    <style>
+    /* 1. Localizamos el iframe del chat y lo sacamos del flujo normal */
+    iframe[title="streamlit.components.v1.html"] {
+        position: fixed !important;
+        bottom: 20px !important;
+        right: 20px !important;
+        width: 350px !important; /* Ancho suficiente para la ventana abierta */
+        height: 520px !important; /* Alto suficiente para la ventana abierta */
+        z-index: 999999 !important;
+        border: none !important;
+        background: transparent !important;
+    }
+
+    /* 2. Ajuste para que el contenedor no bloquee clics en la tabla */
+    /* Esto hace que el área del iframe sea 'invisible' al mouse excepto donde está el chat */
+    iframe[title="streamlit.components.v1.html"] {
+        pointer-events: none !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# El componente debe tener el script de Tawk.to y un pequeño truco de CSS interno
+components.html("""
+    <div style="pointer-events: auto !important;">
         <script type="text/javascript">
             var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
             (function(){
@@ -204,7 +227,6 @@ st.components.v1.html("""
             })();
         </script>
     </div>
-""", height=450)
-
+""", height=520)
 
 
