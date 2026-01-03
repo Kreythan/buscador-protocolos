@@ -12,27 +12,6 @@ if "dark_mode" not in st.session_state:
 def toggle_theme():
     st.session_state.dark_mode = not st.session_state.dark_mode
 
-# --- CONFIGURACIÓN DEL POP-UP FLOTANTE ---
-# --- CÓDIGO PARA POP-UP REAL (SIEMPRE VISIBLE) ---
-
-
-# Mantenemos tu componente que no da errores
-st.components.v1.html("""
-    <div style="background: transparent;">
-        <script type="text/javascript">
-            var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-            (function(){
-                var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-                s1.async=true;
-                s1.src='https://embed.tawk.to/695732610a00df198198e359/1jdu9pk10';
-                s1.charset='UTF-8';
-                s1.setAttribute('crossorigin','*');
-                s0.parentNode.insertBefore(s1,s0);
-            })();
-        </script>
-    </div>
-""", height=100)
-
 
 # 4. CSS DINÁMICO SEGÚN EL MODO
 # 4. CSS DINÁMICO MEJORADO (Sin bordes raros en las esquinas)
@@ -205,5 +184,27 @@ for i, tab in enumerate(tabs):
 # --- CONFIGURACIÓN FINAL DEL CHAT FLOTANTE ---
 
 # --- INYECCIÓN DE POP-UP GLOBAL ---
+
+# --- CONFIGURACIÓN DEL POP-UP FLOTANTE ---
+# --- CÓDIGO PARA POP-UP REAL (SIEMPRE VISIBLE) ---
+
+
+# Mantenemos tu componente que no da errores
+st.components.v1.html("""
+   
+        <script type="text/javascript">
+            var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+            (function(){
+                var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+                s1.async=true;
+                s1.src='https://embed.tawk.to/695732610a00df198198e359/1jdu9pk10';
+                s1.charset='UTF-8';
+                s1.setAttribute('crossorigin','*');
+                s0.parentNode.insertBefore(s1,s0);
+            })();
+        </script>
+
+""", height=0)
+
 
 
