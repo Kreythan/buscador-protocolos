@@ -29,13 +29,13 @@ st.markdown(f"""
         overflow: auto !important;
     }}
 
-    /* COMPORTAMIENTO FULLSCREEN: Quita el límite de 10 filas al expandir */
-    .st-emotion-cache-16idsys.e1nzilvr5, 
-    div[data-testid="stElementToolbar"] + div[data-testid="stDataFrame"] {{
-        max-height: none !important;
-        height: 100% !important;
+/* TÍTULOS (LABELS) */
+    .stWidgetLabel p, label p {{
+        font-size: 24px !important;
+        font-weight: bold !important;
+        color: {text_color} !important;
+        -webkit-text-fill-color: {text_color} !important;
     }}
-
     /* DESACTIVAR BOTÓN DE DESCARGA (Lo bloquea para que no haga nada) */
     button[title="Download as CSV"] {{
         pointer-events: none !important;
@@ -58,6 +58,11 @@ st.markdown(f"""
         bottom: 20px !important;
         right: 20px !important;
         z-index: 1000000 !important;
+    }}
+    /* Texto dentro del filtro */
+    div[data-testid="stSelectbox"] span {{
+        color: {text_color} !important;
+        font-size: 20px !important;
     }}
 
     /* Estilos de pestañas y widgets... */
