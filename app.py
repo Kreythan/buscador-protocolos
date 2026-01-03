@@ -205,16 +205,7 @@ import streamlit.components.v1 as components
 # --- CÓDIGO PARA POP-UP REAL (SIEMPRE VISIBLE) ---
 st.markdown("""
     <style>
-    /* 1. SELECCIONAMOS EL CONTENEDOR PADRE DE STREAMLIT */
-    /* Buscamos el bloque que contiene nuestro chat y lo despegamos de la página */
-    div[data-testid="stVerticalBlock"] > div:has(iframe[title="streamlit.components.v1.html"]) {
-        position: fixed !important;
-        bottom: 20px !important;
-        right: 20px !important;
-        width: 350px !important;
-        height: 520px !important;
-        z-index: 999999 !important;
-    }
+   
 
     /* 2. FORZAMOS EL IFRAME PARA QUE NO TENGA MÁRGENES */
     iframe[title="streamlit.components.v1.html"] {
