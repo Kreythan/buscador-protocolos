@@ -5,17 +5,33 @@ import streamlit.components.v1 as components
 # 1. CONFIGURACIÓN
 st.set_page_config(page_title="Sistema de Protocolos", layout="wide")
 
-# 2. ESTADO DEL TEMA
+# 2. ESTADO DEL TEMA (MODO OSCURO O CLARO)
 if "dark_mode" not in st.session_state:
-    st.session_state.dark_mode = False
+    st.session_state.dark_mode = True
 
 def toggle_theme():
     st.session_state.dark_mode = not st.session_state.dark_mode
 
-# 4. CSS DINÁMICO Y COMPORTAMIENTO DE INTERFAZ
+# 3. CHAT TAWK.TO
+components.html("""
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/695732610a00df198198e359/1jdu9pk10';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+""", height=0)
+
+# 4. CSS DINÁMICO SEGÚN EL MODO
+# 4. CSS DINÁMICO MEJORADO (Sin bordes raros en las esquinas)
 bg_color = "#0e1117" if st.session_state.dark_mode else "white"
 text_color = "white" if st.session_state.dark_mode else "black"
-input_bg = "#262730" if st.session_state.dark_mode else "#f0f2f6"
+input_bg = "#262730" if st.session_state.dark_mode else "#000000"
 filter_bg = "#262730" if st.session_state.dark_mode else "white"
 border_color = "#444" if st.session_state.dark_mode else "#cccccc"
 
@@ -23,50 +39,58 @@ st.markdown(f"""
     <style>
     .stApp {{ background-color: {bg_color} !important; }}
     
-    /* --- CONFIGURACIÓN DE LA TABLA --- */
-    /* 1. Vista normal: limitada a 10 filas (aprox 400px) */
+    /* PESTAÑAS */
+    button[data-baseweb="tab"] p {{
+        font-size: 30px !important; 
+        font-weight: bold !important;
+        color: {text_color} !important;
+    }}
+
+    /* TÍTULOS (LABELS) */
+    .stWidgetLabel p, label p {{
+        font-size: 24px !important;
+        font-weight: bold !important;
+        color: {text_color} !important;
+        -webkit-text-fill-color: {text_color} !important;
+    }}
+
+    /* BUSCADOR REDONDEADO */
+    div[data-testid="stTextInput"] > div {{
+        background-color: {input_bg} !important;
+        border: 1px solid {border_color} !important;
+        border-radius: 15px !important; /* Bordes redondeados */
+        overflow: hidden !important; /* Corta las esquinas del contenedor */
+    }}
+    div[data-testid="stTextInput"] input {{
+        color: white !important;
+        font-size: 22px !important;
+    }}
+
+    /* FILTROS REDONDEADOS (Solución a las esquinas blancas) */
+    div[data-testid="stSelectbox"] > div {{
+        background-color: transparent !important; /* Evita el fondo del contenedor padre */
+        border-radius: 10px !important;
+    }}
+    
+    div[data-baseweb="select"] {{
+        background-color: {filter_bg} !important;
+        border: 1px solid {border_color} !important;
+        border-radius: 15px !important; /* Redondeado total */
+    }}
+
+    /* Texto dentro del filtro */
+    div[data-testid="stSelectbox"] span {{
+        color: {text_color} !important;
+        font-size: 20px !important;
+    }}
+
+    /* TABLA Y MARCOS */
     [data-testid="stDataFrame"] {{
-        max-height: 400px !important;
-        overflow: auto !important;
+        background-color: {bg_color} !important;
+        border-radius: 10px !important;
     }}
 
-    /* 2. Vista Fullscreen: Quitamos el límite para que use toda la pantalla */
-    [data-testid="stMainViewContainer"] [data-testid="stDataFrame"]:fullscreen,
-    div[data-testid="stElementToolbar"] + div[data-testid="stDataFrame"] {{
-        max-height: none !important;
-        height: 100% !important;
-    }}
-
-    /* 3. BOTÓN DE DESCARGA ACTIVO */
-    /* Nos aseguramos de que acepte clics y tenga opacidad total */
-    button[title="Download as CSV"] {{
-        pointer-events: auto !important;
-        opacity: 1 !important;
-        cursor: pointer !important;
-    }}
-
-    /* --- CONFIGURACIÓN DEL CHAT (POP-UP REAL) --- */
-    /* Fijamos el contenedor de Streamlit en la pantalla */
-    div[data-testid="stVerticalBlock"] > div:has(iframe[title="streamlit.components.v1.html"]) {{
-        position: fixed !important;
-        bottom: 20px !important;
-        right: 20px !important;
-        width: 100px !important;
-        height: 100px !important;
-        z-index: 999999 !important;
-    }}
-
-    /* El iframe del chat flota sobre todo */
-    iframe[title="streamlit.components.v1.html"] {{
-        position: fixed !important;
-        bottom: 20px !important;
-        right: 20px !important;
-        z-index: 1000000 !important;
-    }}
-
-    /* Estilos de pestañas y textos */
-    button[data-baseweb="tab"] p {{ font-size: 30px !important; font-weight: bold !important; color: {text_color} !important; }}
-    .stWidgetLabel p {{ font-size: 24px !important; font-weight: bold !important; color: {text_color} !important; }}
+    [data-testid="InputInstructions"] {{ display: none !important; }}
     </style>
 """, unsafe_allow_html=True)
 
