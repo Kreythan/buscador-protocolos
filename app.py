@@ -180,12 +180,7 @@ st.markdown("""
         height: 100% !important;
     }
 
-    /* 3. LIMPIEZA DE BOTONES (Como pediste: quitar descarga y fullscreen si lo deseas) */
-    /* Nota: Si quitas el botón de Fullscreen, no podrás probar la expansión. 
-       He dejado solo el de descarga oculto para que puedas probar. */
-    button[title="Download as CSV"] {
-        display: none !important;
-    }
+  
     </style>
 """, unsafe_allow_html=True)
 
