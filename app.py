@@ -171,30 +171,56 @@ for i, tab in enumerate(tabs):
 # --- CONFIGURACIÓN FINAL DEL CHAT FLOTANTE ---
 
 # --- INYECCIÓN DE POP-UP GLOBAL ---
-components.html("""
-<script>
-    // 1. Cargamos el script de Tawk.to normalmente
-    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-    (function(){
-        var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-        s1.async=true;
-        s1.src='https://embed.tawk.to/695732610a00df198198e359/1jdu9pk10';
-        s1.charset='UTF-8';
-        s1.setAttribute('crossorigin','*');
-        s0.parentNode.insertBefore(s1,s0);
-    })();
+import streamlit as st
+import streamlit.components.v1 as components
 
-    // 2. TRUCO MÁGICO: Forzamos al contenedor de Streamlit a ser un Pop-up real
-    // Buscamos el marco que envuelve este código y lo sacamos del flujo
-    window.parent.document.querySelectorAll('iframe').forEach(function(iframe) {
-        if (iframe.srcdoc && iframe.srcdoc.includes('tawk.to')) {
-            iframe.parentNode.style.position = 'fixed';
-            iframe.parentNode.style.bottom = '20px';
-            iframe.parentNode.style.right = '20px';
-            iframe.parentNode.style.zIndex = '999999';
-            iframe.parentNode.style.width = '100px';
-            iframe.parentNode.style.height = '100px';
-        }
-    });
-</script>
-""", height=0, width=0)
+# --- CONFIGURACIÓN DEL POP-UP FLOTANTE ---
+st.markdown("""
+    <style>
+    /* 1. Forzamos al contenedor de Streamlit que guarda el chat a ser fijo */
+    /* Esto evita que el chat se mueva con el scroll de la página */
+    div.element-container:has(iframe[title="streamlit.components.v1.html"]) {
+        position: fixed !important;
+        bottom: 20px !important;
+        right: 20px !important;
+        z-index: 999999 !important;
+        width: 350px !important;
+        height: 520px !important;
+    }
+
+    /* 2. El iframe se ajusta a ese contenedor fijo */
+    iframe[title="streamlit.components.v1.html"] {
+        position: fixed !important;
+        bottom: 20px !important;
+        right: 20px !important;
+        width: 350px !important; 
+        height: 520px !important;
+        z-index: 1000000 !important;
+        border: none !important;
+        background: transparent !important;
+        pointer-events: none !important; /* No bloquea clics en la tabla si no tocas el chat */
+    }
+
+    /* 3. Permitir interacción solo con el contenido del chat */
+    iframe[title="streamlit.components.v1.html"] * {
+        pointer-events: auto !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# 2. EL COMPONENTE (Mantenemos tu lógica que no da errores)
+components.html("""
+    <div style="pointer-events: auto !important; background: transparent;">
+        <script type="text/javascript">
+            var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+            (function(){
+                var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+                s1.async=true;
+                s1.src='https://embed.tawk.to/695732610a00df198198e359/1jdu9pk10';
+                s1.charset='UTF-8';
+                s1.setAttribute('crossorigin','*');
+                s0.parentNode.insertBefore(s1,s0);
+            })();
+        </script>
+    </div>
+""", height=520)
