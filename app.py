@@ -4,33 +4,7 @@ import streamlit.components.v1 as components
 
 # 1. CONFIGURACIÓN
 st.set_page_config(page_title="Sistema de Protocolos", layout="wide")
-st.markdown("""
-    <style>
-    /* Forzamos a que el contenedor de componentes sea invisible y flote sobre TODA la app */
-    .element-container:has(iframe[title="streamlit.components.v1.html"]) {
-        position: fixed !important;
-        bottom: 20px !important;
-        right: 20px !important;
-        width: 100px !important;
-        height: 100px !important;
-        z-index: 999999 !important;
-    }
 
-    /* Quitamos márgenes del contenedor principal para que nada bloquee el chat */
-    .main .block-container {
-        max-width: 100%;
-    }
-    
-    /* Esto asegura que el iframe ignore el scroll de la página */
-    iframe[title="streamlit.components.v1.html"] {
-        position: fixed !important;
-        bottom: 20px !important;
-        right: 20px !important;
-        z-index: 1000000 !important;
-        border: none !important;
-    }
-    </style>
-""", unsafe_allow_html=True)
 
 # 2. ESTADO DEL TEMA (MODO OSCURO O CLARO)
 if "dark_mode" not in st.session_state:
@@ -194,9 +168,39 @@ for i, tab in enumerate(tabs):
 # --- LA ÚLTIMA SOLUCIÓN: FORZADO DE CAPA FLOTANTE ---
 # --- POP-UP FLOTANTE ABSOLUTO (FUERA DE ESTRUCTURA) ---
 
+st.markdown("""
+    <style>
+    /* Buscamos el contenedor del iframe de Streamlit */
+    div.element-container:has(iframe[title="streamlit.components.v1.html"]) {
+        position: fixed !important;
+        bottom: 20px !important;
+        right: 20px !important;
+        z-index: 999999 !important;
+        width: 100px !important; /* Espacio para la burbuja */
+        height: 100px !important;
+    }
+
+    /* Forzamos al iframe a ser transparente y flotante */
+    iframe[title="streamlit.components.v1.html"] {
+        position: fixed !important;
+        bottom: 20px !important;
+        right: 20px !important;
+        z-index: 1000000 !important;
+        border: none !important;
+    }
+    
+    /* Cuando el chat se abre, el contenedor debe permitir ver la ventana grande */
+    div.element-container:has(iframe[title="streamlit.components.v1.html"]):hover {
+        width: 350px !important;
+        height: 550px !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+
 import streamlit.components.v1 as components
 
-# Inyección directa en el body de la página
+# Inyectamos el componente
 components.html("""
     <script type="text/javascript">
         var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
@@ -209,4 +213,4 @@ components.html("""
             s0.parentNode.insertBefore(s1,s0);
         })();
     </script>
-""", height=0, width=0) # Altura 0 para que no cree un hueco debajo de la tabla
+""", height=1, width=1)
