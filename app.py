@@ -156,27 +156,38 @@ for i, tab in enumerate(tabs):
         # Muestra la tabla con una altura fija para máximo 10 filas aprox.
         # --- PARTE DE LA TABLA ---
 # Aquí es donde limitamos a 10 filas (400px) y quitamos el índice
+# Mostramos la tabla sin altura fija en los parámetros de Python
 st.dataframe(
     df_final, 
     use_container_width=True, 
-    hide_index=True, 
-    height=400  # Esta es la limitación de las 10 filas
+    hide_index=True
 )
 
 # Inmediatamente después de la tabla, pega este bloque para ocultar los botones
 st.markdown("""
     <style>
-    /* Ocultar el botón de descarga y el de pantalla completa de la barra de herramientas negra */
-    button[title="Download as CSV"], 
-    button[title="View fullscreen"] {
-        display: none !important;
+    /* 1. VISTA NORMAL: Limitamos a 10 filas (aprox 400px) cuando está en la página */
+    [data-testid="stDataFrame"] {
+        max-height: 400px !important;
+        overflow: auto !important;
     }
-    
-  
+
+    /* 2. VISTA FULLSCREEN: Cuando se abre el pop-up, quitamos el límite */
+    /* Streamlit envuelve la tabla expandida en un contenedor con clase específica */
+    div[data-testid="stElementToolbar"] + div[data-testid="stDataFrame"],
+    .st-emotion-cache-16idsys.e1nzilvr5 { 
+        max-height: none !important;
+        height: 100% !important;
+    }
+
+    /* 3. LIMPIEZA DE BOTONES (Como pediste: quitar descarga y fullscreen si lo deseas) */
+    /* Nota: Si quitas el botón de Fullscreen, no podrás probar la expansión. 
+       He dejado solo el de descarga oculto para que puedas probar. */
+    button[title="Download as CSV"] {
+        display: none !important;
     }
     </style>
 """, unsafe_allow_html=True)
-
 
 # 3. CHAT TAWK.TO (Versión corregida)
 # --- FORZADO DE VISIBILIDAD DEL CHAT ---
