@@ -7,12 +7,12 @@ st.set_page_config(page_title="Sistema de Protocolos", layout="wide")
 
 # 2. ESTADO DEL TEMA
 if "dark_mode" not in st.session_state:
-    st.session_state.dark_mode = True
+    st.session_state.dark_mode = False
 
 def toggle_theme():
     st.session_state.dark_mode = not st.session_state.dark_mode
 
-# 4. CSS DINÁMICO Y BLOQUEO DE BOTONES
+# 4. CSS DINÁMICO Y COMPORTAMIENTO DE INTERFAZ
 bg_color = "#0e1117" if st.session_state.dark_mode else "white"
 text_color = "white" if st.session_state.dark_mode else "black"
 input_bg = "#262730" if st.session_state.dark_mode else "#f0f2f6"
@@ -23,36 +23,56 @@ st.markdown(f"""
     <style>
     .stApp {{ background-color: {bg_color} !important; }}
     
-    /* LIMITACIÓN DE TABLA A 10 FILAS EN VISTA NORMAL */
+    /* --- CONFIGURACIÓN DE LA TABLA --- */
+    /* 1. Vista normal: limitada a 10 filas (aprox 400px) */
     [data-testid="stDataFrame"] {{
         max-height: 400px !important;
         overflow: auto !important;
     }}
 
-
-
-/* TÍTULOS (LABELS) */
-    .stWidgetLabel p, label p {{
-        font-size: 24px !important;
-        font-weight: normal !important;
-        color: {text_color} !important;
-        -webkit-text-fill-color: {text_color} !important;
+    /* 2. Vista Fullscreen: Quitamos el límite para que use toda la pantalla */
+    [data-testid="stMainViewContainer"] [data-testid="stDataFrame"]:fullscreen,
+    div[data-testid="stElementToolbar"] + div[data-testid="stDataFrame"] {{
+        max-height: none !important;
+        height: 100% !important;
     }}
 
-
-   
-   
-    /* Texto dentro del filtro */
-    div[data-testid="stSelectbox"] span {{
-        color: {text_color} !important;
-        font-size: 20px !important;
+    /* 3. BOTÓN DE DESCARGA ACTIVO */
+    /* Nos aseguramos de que acepte clics y tenga opacidad total */
+    button[title="Download as CSV"] {{
+        pointer-events: auto !important;
+        opacity: 1 !important;
+        cursor: pointer !important;
     }}
 
-    /* Estilos de pestañas y widgets... */
+    /* --- CONFIGURACIÓN DEL CHAT (POP-UP REAL) --- */
+    /* Fijamos el contenedor de Streamlit en la pantalla */
+    div[data-testid="stVerticalBlock"] > div:has(iframe[title="streamlit.components.v1.html"]) {{
+        position: fixed !important;
+        bottom: 20px !important;
+        right: 20px !important;
+        width: 100px !important;
+        height: 100px !important;
+        z-index: 999999 !important;
+    }}
+
+    /* El iframe del chat flota sobre todo */
+    iframe[title="streamlit.components.v1.html"] {{
+        position: fixed !important;
+        bottom: 20px !important;
+        right: 20px !important;
+        z-index: 1000000 !important;
+    }}
+
+    /* Estilos de pestañas y textos */
     button[data-baseweb="tab"] p {{ font-size: 30px !important; font-weight: bold !important; color: {text_color} !important; }}
     .stWidgetLabel p {{ font-size: 24px !important; font-weight: bold !important; color: {text_color} !important; }}
     </style>
 """, unsafe_allow_html=True)
+
+
+
+
 
 # 5. CARGA DE DATOS (Mantenemos tu función)
 @st.cache_data(ttl=5)
