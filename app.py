@@ -175,42 +175,40 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 # --- CONFIGURACIÓN DEL POP-UP FLOTANTE ---
+# --- CÓDIGO PARA POP-UP REAL (SIEMPRE VISIBLE) ---
 st.markdown("""
     <style>
-    /* 1. Forzamos al contenedor de Streamlit que guarda el chat a ser fijo */
-    /* Esto evita que el chat se mueva con el scroll de la página */
-    div.element-container:has(iframe[title="streamlit.components.v1.html"]) {
+    /* 1. SELECCIONAMOS EL CONTENEDOR PADRE DE STREAMLIT */
+    /* Buscamos el bloque que contiene nuestro chat y lo despegamos de la página */
+    div[data-testid="stVerticalBlock"] > div:has(iframe[title="streamlit.components.v1.html"]) {
         position: fixed !important;
         bottom: 20px !important;
         right: 20px !important;
-        z-index: 999999 !important;
         width: 350px !important;
         height: 520px !important;
+        z-index: 999999 !important;
     }
 
-    /* 2. El iframe se ajusta a ese contenedor fijo */
+    /* 2. FORZAMOS EL IFRAME PARA QUE NO TENGA MÁRGENES */
     iframe[title="streamlit.components.v1.html"] {
         position: fixed !important;
         bottom: 20px !important;
         right: 20px !important;
-        width: 350px !important; 
-        height: 520px !important;
         z-index: 1000000 !important;
-        border: none !important;
-        background: transparent !important;
-        pointer-events: none !important; /* No bloquea clics en la tabla si no tocas el chat */
+        pointer-events: none !important; /* Deja pasar clics a la tabla si el chat está cerrado */
     }
 
-    /* 3. Permitir interacción solo con el contenido del chat */
-    iframe[title="streamlit.components.v1.html"] * {
+    /* 3. LIBERAMOS LOS CLICS PARA LA BURBUJA */
+    /* Esto permite que aunque el cuadro sea invisible, la burbuja sí responda */
+    iframe[title="streamlit.components.v1.html"] {
         pointer-events: auto !important;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# 2. EL COMPONENTE (Mantenemos tu lógica que no da errores)
-components.html("""
-    <div style="pointer-events: auto !important; background: transparent;">
+# Mantenemos tu componente que no da errores
+st.components.v1.html("""
+    <div style="background: transparent;">
         <script type="text/javascript">
             var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
             (function(){
