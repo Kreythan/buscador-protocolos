@@ -169,41 +169,32 @@ for i, tab in enumerate(tabs):
 # --- POP-UP FLOTANTE ABSOLUTO (FUERA DE ESTRUCTURA) ---
 
 # --- CONFIGURACIÓN FINAL DEL CHAT FLOTANTE ---
-st.markdown("""
-    <style>
-    /* 1. Localizamos el iframe del chat y lo sacamos del flujo normal */
-    iframe[title="streamlit.components.v1.html"] {
-        position: fixed !important;
-        bottom: 20px !important;
-        right: 20px !important;
-        width: 350px !important; /* Ancho suficiente para la ventana abierta */
-        height: 520px !important; /* Alto suficiente para la ventana abierta */
-        z-index: 999999 !important;
-        border: none !important;
-        background: transparent !important;
-    }
 
-    /* 2. Ajuste para que el contenedor no bloquee clics en la tabla */
-    /* Esto hace que el área del iframe sea 'invisible' al mouse excepto donde está el chat */
-    iframe[title="streamlit.components.v1.html"] {
-        pointer-events: none !important;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-# El componente debe tener el script de Tawk.to y un pequeño truco de CSS interno
+# --- INYECCIÓN DE POP-UP GLOBAL ---
 components.html("""
-    <div style="pointer-events: auto !important;">
-        <script type="text/javascript">
-            var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-            (function(){
-                var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-                s1.async=true;
-                s1.src='https://embed.tawk.to/695732610a00df198198e359/1jdu9pk10';
-                s1.charset='UTF-8';
-                s1.setAttribute('crossorigin','*');
-                s0.parentNode.insertBefore(s1,s0);
-            })();
-        </script>
-    </div>
-""", height=520)
+<script>
+    // 1. Cargamos el script de Tawk.to normalmente
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+        var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+        s1.async=true;
+        s1.src='https://embed.tawk.to/695732610a00df198198e359/1jdu9pk10';
+        s1.charset='UTF-8';
+        s1.setAttribute('crossorigin','*');
+        s0.parentNode.insertBefore(s1,s0);
+    })();
+
+    // 2. TRUCO MÁGICO: Forzamos al contenedor de Streamlit a ser un Pop-up real
+    // Buscamos el marco que envuelve este código y lo sacamos del flujo
+    window.parent.document.querySelectorAll('iframe').forEach(function(iframe) {
+        if (iframe.srcdoc && iframe.srcdoc.includes('tawk.to')) {
+            iframe.parentNode.style.position = 'fixed';
+            iframe.parentNode.style.bottom = '20px';
+            iframe.parentNode.style.right = '20px';
+            iframe.parentNode.style.zIndex = '999999';
+            iframe.parentNode.style.width = '100px';
+            iframe.parentNode.style.height = '100px';
+        }
+    });
+</script>
+""", height=0, width=0)
