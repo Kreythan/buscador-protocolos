@@ -153,7 +153,7 @@ for i, tab in enumerate(tabs):
         if f_lo_tiene != "Todos": df_final = df_final[df_final['Lo tiene'].astype(str) == f_lo_tiene]
 
         st.markdown(f"<p style='font-size: 24px; color: {text_color};'>Registros: {len(df_final)}</p>", unsafe_allow_html=True)
-           st.dataframe(df_final, use_container_width=True, hide_index=True)
+        st.dataframe(df_final, use_container_width=True, hide_index=True)
 
 
 # 3. CHAT TAWK.TO (Versión corregida)
