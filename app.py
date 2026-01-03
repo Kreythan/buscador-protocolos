@@ -7,7 +7,7 @@ st.set_page_config(page_title="Sistema de Protocolos", layout="wide")
 
 # 2. ESTADO DEL TEMA
 if "dark_mode" not in st.session_state:
-    st.session_state.dark_mode = False
+    st.session_state.dark_mode = True
 
 def toggle_theme():
     st.session_state.dark_mode = not st.session_state.dark_mode
@@ -41,22 +41,7 @@ st.markdown(f"""
 
 
    
-    /* CSS DEL CHAT (POP-UP REAL) */
-    div[data-testid="stVerticalBlock"] > div:has(iframe[title="streamlit.components.v1.html"]) {{
-        position: fixed !important;
-        bottom: 20px !important;
-        right: 20px !important;
-        width: 100px !important;
-        height: 100px !important;
-        z-index: 999999 !important;
-    }}
-
-    iframe[title="streamlit.components.v1.html"] {{
-        position: fixed !important;
-        bottom: 20px !important;
-        right: 20px !important;
-        z-index: 1000000 !important;
-    }}
+   
     /* Texto dentro del filtro */
     div[data-testid="stSelectbox"] span {{
         color: {text_color} !important;
