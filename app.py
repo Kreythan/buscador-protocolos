@@ -153,36 +153,8 @@ for i, tab in enumerate(tabs):
         if f_lo_tiene != "Todos": df_final = df_final[df_final['Lo tiene'].astype(str) == f_lo_tiene]
 
         st.markdown(f"<p style='font-size: 24px; color: {text_color};'>Registros: {len(df_final)}</p>", unsafe_allow_html=True)
-        # Muestra la tabla con una altura fija para máximo 10 filas aprox.
-        # --- PARTE DE LA TABLA ---
-# Aquí es donde limitamos a 10 filas (400px) y quitamos el índice
-# Mostramos la tabla sin altura fija en los parámetros de Python
-st.dataframe(
-    df_final, 
-    use_container_width=True, 
-    hide_index=True
-)
+           st.dataframe(df_final, use_container_width=True, hide_index=True)
 
-# Inmediatamente después de la tabla, pega este bloque para ocultar los botones
-st.markdown("""
-    <style>
-    /* 1. VISTA NORMAL: Limitamos a 10 filas (aprox 400px) cuando está en la página */
-    [data-testid="stDataFrame"] {
-        max-height: 400px !important;
-        overflow: auto !important;
-    }
-
-    /* 2. VISTA FULLSCREEN: Cuando se abre el pop-up, quitamos el límite */
-    /* Streamlit envuelve la tabla expandida en un contenedor con clase específica */
-    div[data-testid="stElementToolbar"] + div[data-testid="stDataFrame"],
-    .st-emotion-cache-16idsys.e1nzilvr5 { 
-        max-height: none !important;
-        height: 100% !important;
-    }
-
-  
-    </style>
-""", unsafe_allow_html=True)
 
 # 3. CHAT TAWK.TO (Versión corregida)
 # --- FORZADO DE VISIBILIDAD DEL CHAT ---
