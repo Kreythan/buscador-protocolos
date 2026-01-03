@@ -44,7 +44,7 @@ st.markdown(f"""
     /* DESACTIVAR BOTÓN DE DESCARGA (Lo bloquea para que no haga nada) */
     button[title="Download as CSV"] {{
         pointer-events: none !important;
-        opacity: 1 !important; /* Opcional: se ve un poco más claro para indicar que no funciona */
+       
         cursor: not-allowed !important;
     }}
 
