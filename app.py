@@ -31,7 +31,7 @@ st.components.v1.html("""
             })();
         </script>
     </div>
-""", height=520)
+""")
 
 
 # 4. CSS DINÁMICO SEGÚN EL MODO
