@@ -203,7 +203,7 @@ st.components.v1.html("""
                 s0.parentNode.insertBefore(s1,s0);
             })();
         </script>
-    div>
+    </div>
 """, height=450)
 
 
