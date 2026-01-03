@@ -5,22 +5,17 @@ import streamlit.components.v1 as components
 # 1. CONFIGURACIÓN
 st.set_page_config(page_title="Sistema de Protocolos", layout="wide")
 
-
-# 2. ESTADO DEL TEMA (MODO OSCURO O CLARO)
+# 2. ESTADO DEL TEMA
 if "dark_mode" not in st.session_state:
     st.session_state.dark_mode = False
 
 def toggle_theme():
     st.session_state.dark_mode = not st.session_state.dark_mode
 
-
-
-
-# 4. CSS DINÁMICO SEGÚN EL MODO
-# 4. CSS DINÁMICO MEJORADO (Sin bordes raros en las esquinas)
+# 4. CSS DINÁMICO Y BLOQUEO DE BOTONES
 bg_color = "#0e1117" if st.session_state.dark_mode else "white"
 text_color = "white" if st.session_state.dark_mode else "black"
-input_bg = "#262730" if st.session_state.dark_mode else "#000000"
+input_bg = "#262730" if st.session_state.dark_mode else "#f0f2f6"
 filter_bg = "#262730" if st.session_state.dark_mode else "white"
 border_color = "#444" if st.session_state.dark_mode else "#cccccc"
 
@@ -28,60 +23,59 @@ st.markdown(f"""
     <style>
     .stApp {{ background-color: {bg_color} !important; }}
     
-    /* PESTAÑAS */
-    button[data-baseweb="tab"] p {{
-        font-size: 30px !important; 
-        font-weight: bold !important;
-        color: {text_color} !important;
-    }}
-
-    /* TÍTULOS (LABELS) */
-    .stWidgetLabel p, label p {{
-        font-size: 24px !important;
-        font-weight: bold !important;
-        color: {text_color} !important;
-        -webkit-text-fill-color: {text_color} !important;
-    }}
-
-    /* BUSCADOR REDONDEADO */
-    div[data-testid="stTextInput"] > div {{
-        background-color: {input_bg} !important;
-        border: 1px solid {border_color} !important;
-        border-radius: 15px !important; /* Bordes redondeados */
-        overflow: hidden !important; /* Corta las esquinas del contenedor */
-    }}
-    div[data-testid="stTextInput"] input {{
-        color: white !important;
-        font-size: 22px !important;
-    }}
-
-    /* FILTROS REDONDEADOS (Solución a las esquinas blancas) */
-    div[data-testid="stSelectbox"] > div {{
-        background-color: transparent !important; /* Evita el fondo del contenedor padre */
-        border-radius: 10px !important;
-    }}
-    
-    div[data-baseweb="select"] {{
-        background-color: {filter_bg} !important;
-        border: 1px solid {border_color} !important;
-        border-radius: 15px !important; /* Redondeado total */
-    }}
-
-    /* Texto dentro del filtro */
-    div[data-testid="stSelectbox"] span {{
-        color: {text_color} !important;
-        font-size: 20px !important;
-    }}
-
-    /* TABLA Y MARCOS */
+    /* LIMITACIÓN DE TABLA A 10 FILAS EN VISTA NORMAL */
     [data-testid="stDataFrame"] {{
-        background-color: {bg_color} !important;
-        border-radius: 10px !important;
+        max-height: 400px !important;
+        overflow: auto !important;
     }}
 
-    [data-testid="InputInstructions"] {{ display: none !important; }}
+    /* COMPORTAMIENTO FULLSCREEN: Quita el límite de 10 filas al expandir */
+    .st-emotion-cache-16idsys.e1nzilvr5, 
+    div[data-testid="stElementToolbar"] + div[data-testid="stDataFrame"] {{
+        max-height: none !important;
+        height: 100% !important;
+    }}
+
+    /* DESACTIVAR BOTÓN DE DESCARGA (Lo bloquea para que no haga nada) */
+    button[title="Download as CSV"] {{
+        pointer-events: none !important;
+        opacity: 0.5 !important; /* Opcional: se ve un poco más claro para indicar que no funciona */
+        cursor: not-allowed !important;
+    }}
+
+    /* CSS DEL CHAT (POP-UP REAL) */
+    div[data-testid="stVerticalBlock"] > div:has(iframe[title="streamlit.components.v1.html"]) {{
+        position: fixed !important;
+        bottom: 20px !important;
+        right: 20px !important;
+        width: 100px !important;
+        height: 100px !important;
+        z-index: 999999 !important;
+    }}
+
+    iframe[title="streamlit.components.v1.html"] {{
+        position: fixed !important;
+        bottom: 20px !important;
+        right: 20px !important;
+        z-index: 1000000 !important;
+    }}
+
+    /* Estilos de pestañas y widgets... */
+    button[data-baseweb="tab"] p {{ font-size: 30px !important; font-weight: bold !important; color: {text_color} !important; }}
+    .stWidgetLabel p {{ font-size: 24px !important; font-weight: bold !important; color: {text_color} !important; }}
     </style>
 """, unsafe_allow_html=True)
+
+# 5. CARGA DE DATOS (Mantenemos tu función)
+@st.cache_data(ttl=5)
+def load_data_by_gid(gid_number):
+    doc_id = "2PACX-1vRXI7sk1CdNqrMCi3lapZjt8DMoRwjVsiSknQwjgvBjVJHbusZ4GWjDYTJzTl40wictijbYo8ESq7gI"
+    url = f"https://docs.google.com/spreadsheets/d/e/{doc_id}/pub?gid={gid_number}&single=true&output=csv"
+    try:
+        data = pd.read_csv(url)
+        return data
+    except:
+        return pd.DataFrame(columns=['Protocolo', 'Hecho por', 'Realizado por', 'Lo tiene'])
 # 5. CARGA DE DATOS POR GID
 @st.cache_data(ttl=5)
 def load_data_by_gid(gid_number):
