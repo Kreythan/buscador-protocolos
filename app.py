@@ -191,7 +191,7 @@ for i, tab in enumerate(tabs):
 
 # Mantenemos tu componente que no da errores
 st.components.v1.html("""
-   
+    <div style="background: transparent;">
         <script type="text/javascript">
             var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
             (function(){
@@ -203,8 +203,8 @@ st.components.v1.html("""
                 s0.parentNode.insertBefore(s1,s0);
             })();
         </script>
-
-""", height=0)
+    div>
+""", height=450)
 
 
 
