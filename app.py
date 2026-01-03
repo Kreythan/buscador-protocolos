@@ -45,7 +45,7 @@ st.markdown(f"""
     button[title="Download as CSV"] {{
         pointer-events: none !important;
         
-        cursor: not-allowed !important;
+     
         
     }}
 
