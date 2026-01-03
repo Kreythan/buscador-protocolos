@@ -40,15 +40,7 @@ st.markdown(f"""
     }}
 
 
-    
-    /* DESACTIVAR BOTÓN DE DESCARGA (Lo bloquea para que no haga nada) */
-    button[title="Download as CSV"] {{
-        pointer-events: none !important;
-        
-     
-        
-    }}
-
+   
     /* CSS DEL CHAT (POP-UP REAL) */
     div[data-testid="stVerticalBlock"] > div:has(iframe[title="streamlit.components.v1.html"]) {{
         position: fixed !important;
