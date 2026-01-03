@@ -44,8 +44,9 @@ st.markdown(f"""
     /* DESACTIVAR BOTÓN DE DESCARGA (Lo bloquea para que no haga nada) */
     button[title="Download as CSV"] {{
         pointer-events: none !important;
-       
+        
         cursor: not-allowed !important;
+        
     }}
 
     /* CSS DEL CHAT (POP-UP REAL) */
