@@ -154,7 +154,32 @@ for i, tab in enumerate(tabs):
 
         st.markdown(f"<p style='font-size: 24px; color: {text_color};'>Registros: {len(df_final)}</p>", unsafe_allow_html=True)
         # Muestra la tabla con una altura fija para máximo 10 filas aprox.
-        st.dataframe(df_final, use_container_width=True, hide_index=True, height=400)
+        # --- PARTE DE LA TABLA ---
+# Aquí es donde limitamos a 10 filas (400px) y quitamos el índice
+st.dataframe(
+    df_final, 
+    use_container_width=True, 
+    hide_index=True, 
+    height=400  # Esta es la limitación de las 10 filas
+)
+
+# Inmediatamente después de la tabla, pega este bloque para ocultar los botones
+st.markdown("""
+    <style>
+    /* Ocultar el botón de descarga y el de pantalla completa de la barra de herramientas negra */
+    button[title="Download as CSV"], 
+    button[title="View fullscreen"] {
+        display: none !important;
+    }
+    
+    /* Si quieres quitar TODA la barra de herramientas negra de la imagen, usa este: */
+    [data-testid="stElementToolbar"] {
+        display: none !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+
 # 3. CHAT TAWK.TO (Versión corregida)
 # --- FORZADO DE VISIBILIDAD DEL CHAT ---
 # --- FORZADO DE VENTANA DE CHAT COMPLETA ---
